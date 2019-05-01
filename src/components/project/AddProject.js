@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import UserList from '../user/UserList'
 
 export default class AddProject extends React.Component {
     constructor(props) {
@@ -50,10 +51,7 @@ export default class AddProject extends React.Component {
         });
     }
     onChangeManager(e) {
-        axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
-      .then(response => {
-        this.setState({ users: response.data });
-      })
+       
         this.setState({
             manager: e.target.value
         });
@@ -71,9 +69,10 @@ export default class AddProject extends React.Component {
     }
 
     onSearch = () => {
-        this.setState({
-            isShowing: true
-        });
+        axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
+      .then(response => {
+        this.setState({ users: response.data });
+      })
     }
     onSubmit(e) {
         e.preventDefault();
@@ -103,11 +102,18 @@ export default class AddProject extends React.Component {
 
     render() {
         let rows =[]
-        rows = (this.props.users === undefined) ? [] : this.props.users.map((user) =>{
-            <ViewUsersContainer
-            kay={'user-' + user.id}
-            user = {user}></ViewUsersContainer>
+        this.state.users.forEach((user) => {
+            rows.push(
+                <UserList
+            key={'user-' + user.id}
+            user = {user}></UserList>
+            );
         });
+        // rows = (this.state.users === undefined) ? [] : this.state.users.map((user) =>{
+        //     <UserList
+        //     key={'user-' + user.id}
+        //     user = {user}></UserList>
+        // });
         return (
             <div>
                 <form className="form-horizontal" onSubmit={this.onSubmit.bind(this)}>
@@ -159,7 +165,7 @@ export default class AddProject extends React.Component {
                                     </div>
                                     <div class="col-sm-2">
                                    
-                                        <button type="button" className="btn btn-outline-dark" data-toggle="modal" data-target="#myModal">Search</button>
+                                        <button type="button" className="btn btn-outline-dark" data-toggle="modal" data-target="#myModal" onClick= {this.onSearch} >Search</button>
                                        
                                     </div>
                                 </div>
@@ -182,6 +188,7 @@ export default class AddProject extends React.Component {
                                             <button type='button' className='close' data-dismiss='modal'>&times;</button>
                                         </div>
                                         <div className='modal-body'>
+                                        {rows}
                                         </div>
                                         <div className='modal-footer'>
                                             <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>
