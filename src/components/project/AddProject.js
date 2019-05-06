@@ -1,6 +1,33 @@
 import React from 'react'
 import axios from 'axios'
 import UserList from '../user/UserList'
+import DataTable from 'react-data-table-component'
+
+
+const columns = [
+    {
+        name: 'First Name',
+        selector: 'firstName',
+        sortable: true,
+    },
+    {
+        name: 'Last Name',
+        selector: 'lastName',
+        sortable: true,
+    },
+    {
+        name: 'Employee ID',
+        selector: 'employeeId',
+        sortable: true,
+    },
+];
+
+const user = {
+    userId : '',
+    firstName : '',
+    lastName: '',
+    employeeId : '',
+}
 
 export default class AddProject extends React.Component {
     constructor(props) {
@@ -19,7 +46,7 @@ export default class AddProject extends React.Component {
             endDate: new Date(),
             priority: 10,
             manager: "",
-           users: []
+            users: []
         }
     }
     onChangeProject(e) {
@@ -51,7 +78,6 @@ export default class AddProject extends React.Component {
         });
     }
     onChangeManager(e) {
-       
         this.setState({
             manager: e.target.value
         });
@@ -70,9 +96,9 @@ export default class AddProject extends React.Component {
 
     onSearch = () => {
         axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
-      .then(response => {
-        this.setState({ users: response.data });
-      })
+            .then(response => {
+                this.setState({ users: response.data });
+            })
     }
     onSubmit(e) {
         e.preventDefault();
@@ -83,11 +109,6 @@ export default class AddProject extends React.Component {
             endDate: this.state.endDate,
             priority: this.state.priority,
             manager: this.state.manager
-        }
-        const user = {
-            userId: 1,
-            firstName: "polo",
-            lastName: "xyz"
         }
         const record = {
             taskId: 0,
@@ -100,20 +121,16 @@ export default class AddProject extends React.Component {
         ).then(res => console.log(res.data));
     }
 
+    handleChange = (state) => {
+        user.userId = state.selectedRows[0].userId
+        user.firstName = state.selectedRows[0].firstName
+        user.lastName = state.selectedRows[0].lastName
+        user.employeeId = state.selectedRows[0].employeeId
+        console.log('Selected Rows: ', state.selectedRows);
+        console.log(user);
+    }
+
     render() {
-        let rows =[]
-        this.state.users.forEach((user) => {
-            rows.push(
-                <UserList
-            key={'user-' + user.id}
-            user = {user}></UserList>
-            );
-        });
-        // rows = (this.state.users === undefined) ? [] : this.state.users.map((user) =>{
-        //     <UserList
-        //     key={'user-' + user.id}
-        //     user = {user}></UserList>
-        // });
         return (
             <div>
                 <form className="form-horizontal" onSubmit={this.onSubmit.bind(this)}>
@@ -164,9 +181,9 @@ export default class AddProject extends React.Component {
                                         <input type="text" className="form-control" value={this.state.manager} onChange={this.onChangeManager.bind(this)} />
                                     </div>
                                     <div class="col-sm-2">
-                                   
-                                        <button type="button" className="btn btn-outline-dark" data-toggle="modal" data-target="#myModal" onClick= {this.onSearch} >Search</button>
-                                       
+
+                                        <button type="button" className="btn btn-outline-dark" data-toggle="modal" data-target="#myModal" onClick={this.onSearch} >Search</button>
+
                                     </div>
                                 </div>
                             </div>
@@ -180,23 +197,29 @@ export default class AddProject extends React.Component {
                     </div>
                 </form>
                 <div className="modal fade" id="myModal" role="dialog">
-                                
-                <div className="modal-dialog">
-                                    <div className='modal-content'>
-                                        <div className='modal-header'>
-                                            <h5 className='modal-title'>Search Manager</h5>
-                                            <button type='button' className='close' data-dismiss='modal'>&times;</button>
-                                        </div>
-                                        <div className='modal-body'>
-                                        {rows}
-                                        </div>
-                                        <div className='modal-footer'>
-                                            <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                           
-            </div>
+
+                    <div className="modal-dialog">
+                        <div className='modal-content'>
+                            <div className='modal-header'>
+                                <h5 className='modal-title'>Search Manager</h5>
+                                <button type='button' className='close' data-dismiss='modal'>&times;</button>
+                            </div>
+                            <div className='modal-body'>
+                                <DataTable
+                                    title="Users Details"
+                                    columns={columns}
+                                    data={this.state.users}
+                                    selectableRows
+                                    onTableUpdate={this.handleChange}>
+                                </DataTable>
+                            </div>
+                            <div className='modal-footer'>
+                                <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         )
     }
