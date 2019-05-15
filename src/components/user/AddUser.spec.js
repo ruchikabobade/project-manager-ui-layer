@@ -8,7 +8,7 @@ describe('AddUser' , () => {
     beforeEach(() => wrapper = shallow(<AddUser/>))
 
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(14);
+        expect(wrapper.find('div').length).toEqual(22);
     });
 
     it('should render a <form/>', () => {
@@ -16,7 +16,7 @@ describe('AddUser' , () => {
     });
 
     it('should render a <input/>', () => {
-        expect(wrapper.find('input').length).toEqual(4);
+        expect(wrapper.find('input').length).toEqual(5);
     });
 
 })

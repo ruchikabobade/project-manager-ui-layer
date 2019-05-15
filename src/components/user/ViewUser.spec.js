@@ -5,22 +5,14 @@ import ViewUser from './ViewUser';
 
 describe('ViewUser' , () => {
     let wrapper;
-    beforeEach(() => wrapper = shallow(<ViewUser/>))
+    beforeEach(() => wrapper = shallow(<ViewUser user = {''} key = {' '} />))
 
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(1);
-    });
-
-    it('should render a <form/>', () => {
-        expect(wrapper.find('form').length).toEqual(1);
-    });
-
-    it('should render a <span/>', () => {
-        expect(wrapper.find('span').length).toEqual(2);
+        expect(wrapper.find('div').length).toEqual(5);
     });
 
     it('should render a <input/>', () => {
-        expect(wrapper.find('input').length).toEqual(1);
+        expect(wrapper.find('input').length).toEqual(3);
     });
 
 })

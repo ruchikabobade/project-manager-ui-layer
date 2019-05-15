@@ -10,14 +10,10 @@ describe('User', () => {
     beforeEach(() => wrapper = shallow(<User/>))
     
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(3);
+        expect(wrapper.find('div').length).toEqual(2);
     });
 
     it('should render the AddUser Component', () => {
         expect(wrapper.containsMatchingElement(<AddUser/>)).toEqual(true);
-    });
-
-    it('should render the ViewUser Component', () => {
-        expect(wrapper.containsMatchingElement(<ViewUser/>)).toEqual(true);
     });
 });
