@@ -7,7 +7,6 @@ export default class User extends React.Component {
         return(
             <div>
             <div className="user"><AddUser></AddUser></div>
-            <div className="user"><ViewUser></ViewUser></div>
             </div>
         )
     }

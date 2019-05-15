@@ -1,6 +1,5 @@
 import React from 'react'
 import axios from 'axios'
-import UserList from '../user/UserList'
 import DataTable from 'react-data-table-component'
 
 

@@ -90,3 +90,11 @@ align-items: center;
 .display-none {
   display: none;
 }
+
+.viewUser{
+  padding: 5px;
+}
+
+.space {
+  padding: 1px;
+}
