@@ -8,7 +8,7 @@ describe('AddProject' , () => {
     beforeEach(() => wrapper = shallow(<AddProject/>))
 
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(26);
+        expect(wrapper.find('div').length).toEqual(34);
     });
 
     it('should render a <form/>', () => {
@@ -16,7 +16,7 @@ describe('AddProject' , () => {
     });
 
     it('should render a <input/>', () => {
-        expect(wrapper.find('input').length).toEqual(7);
+        expect(wrapper.find('input').length).toEqual(8);
     });
 
 })

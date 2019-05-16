@@ -5,14 +5,10 @@ import ViewProject from './ViewProject';
 
 describe('ViewProject' , () => {
     let wrapper;
-    beforeEach(() => wrapper = shallow(<ViewProject/>))
+    beforeEach(() => wrapper = shallow(<ViewProject project={''}/>))
 
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(1);
-    });
-
-    it('should render a <span/>', () => {
-        expect(wrapper.find('span').length).toEqual(2);
+        expect(wrapper.find('div').length).toEqual(5);
     });
 
     it('should render a <input/>', () => {

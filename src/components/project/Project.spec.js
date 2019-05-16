@@ -10,14 +10,10 @@ describe('Project', () => {
     beforeEach(() => wrapper = shallow(<Project/>))
     
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(4);
+        expect(wrapper.find('div').length).toEqual(2);
     });
 
     it('should render the AddProject Component', () => {
         expect(wrapper.containsMatchingElement(<AddProject/>)).toEqual(true);
-    });
-
-    it('should render the ViewProject Component', () => {
-        expect(wrapper.containsMatchingElement(<ViewProject/>)).toEqual(true);
     });
 });
