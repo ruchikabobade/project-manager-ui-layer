@@ -13,6 +13,7 @@ export default class AddUser extends React.Component {
             firstName: "",
             lastName: "",
             employeeId: "",
+            userId: 0,
             users: [],
             initialUsers: []
         }
@@ -22,34 +23,34 @@ export default class AddUser extends React.Component {
         axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
             .then(response => {
                 this.setState({ initialUsers: response.data });
-                this.setState({ users: response.data});
+                this.setState({ users: response.data });
             })
     }
 
-    filterList(e){
+    filterList(e) {
         var updatedList = this.state.initialUsers;
-        updatedList = updatedList.filter(function(user){
-          return user.firstName.toLowerCase().search(
-            e.target.value.toLowerCase()) !== -1;
+        updatedList = updatedList.filter(function (user) {
+            return user.firstName.toLowerCase().search(
+                e.target.value.toLowerCase()) !== -1;
         });
-       
-        if(updatedList.length > 0){
-        this.setState({users: updatedList});
+
+        if (updatedList.length > 0) {
+            this.setState({ users: updatedList });
         }
     }
-      compareBy = (key) => { 
-        return function(a, b) {
-          if (a[key] < b[key]) return -1;
-          if (a[key] > b[key]) return 1;
-          return 0;
+    compareBy = (key) => {
+        return function (a, b) {
+            if (a[key] < b[key]) return -1;
+            if (a[key] > b[key]) return 1;
+            return 0;
         };
-      };
-      
-      sortList = (key) => {
+    };
+
+    sortList = (key) => {
         let arrayCopy = [...this.state.users];
         arrayCopy.sort(this.compareBy(key));
         this.setState({ users: arrayCopy });
-      };
+    };
 
     onChangeFirstName(e) {
         this.setState({
@@ -84,11 +85,11 @@ export default class AddUser extends React.Component {
         }
         axios.post('http://localhost:8080/projectmanager/service/user/addUser', userRecord
         ).then(res => console.log(res.data));
-        
+
         axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
             .then(response => {
                 this.setState({ initialUsers: response.data });
-                this.setState({ users: response.data});
+                this.setState({ users: response.data });
             })
     }
 
@@ -96,13 +97,29 @@ export default class AddUser extends React.Component {
     //     // Only update if bricks change
     //     return true
     //   }
+
+    delete = (u) => {
+        console.log(u)
+        axios.delete('http://localhost:8080/projectmanager/service/user/deleteUser/' + u.userId)
+            .then(response => { })
+    }
+
+    update = (u) => {
+        console.log(u)
+        this.setState({ firstName: u.firstName });
+        this.setState({ lastName: u.lastName });
+        this.setState({ employeeId: u.employeeId });
+        this.setState({ userId: u.userId });
+    }
+
+
     render() {
         const rows = []
 
         this.state.users.forEach((user) => {
             rows.push(
                 <ViewUser user={user}
-                    key={user.employeeId} />
+                    key={user.employeeId} onSelectDeleteUser={this.delete} onSelectEditUser={this.update} />
             )
         });
 
@@ -149,7 +166,6 @@ export default class AddUser extends React.Component {
                 </div>
                 <div>
                     <div>
-                       
                         <div className="container">
                             <div className="row">
                                 <div className="col-sm-6">
@@ -162,8 +178,7 @@ export default class AddUser extends React.Component {
                                     </span>
                                 </div>
                             </div>
-                            </div>
-                      
+                        </div>
                     </div>
                     <div>{rows}</div>
                 </div>

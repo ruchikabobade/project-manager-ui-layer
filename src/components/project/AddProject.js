@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import DataTable from 'react-data-table-component'
+import ViewProject from './ViewProject'
 
 
 const columns = [
@@ -45,9 +46,32 @@ export default class AddProject extends React.Component {
             endDate: new Date(),
             priority: 10,
             manager: "",
-            users: []
+            users: [],
+            initialProjects: [],
+            projects: []
         }
     }
+
+    componentWillMount() {
+        axios.get('http://localhost:8080/projectmanager/service/project/viewProject')
+            .then(response => {
+                this.setState({ initialprojects: response.data });
+                this.setState({ projects: response.data });
+            })
+    }
+
+    filterList(e) {
+        var updatedList = this.state.initialProjects;
+        updatedList = updatedList.filter(function (project) {
+            return project.project.toLowerCase().search(
+                e.target.value.toLowerCase()) !== -1;
+        });
+
+        if (updatedList.length > 0) {
+            this.setState({ projects: updatedList });
+        }
+    }
+
     onChangeProject(e) {
         this.setState({
             project: e.target.value
@@ -99,6 +123,7 @@ export default class AddProject extends React.Component {
                 this.setState({ users: response.data });
             })
     }
+
     onSubmit(e) {
         e.preventDefault();
         const project = {
@@ -130,6 +155,14 @@ export default class AddProject extends React.Component {
     }
 
     render() {
+        const rows = []
+
+        this.state.projects.forEach((project) => {
+            rows.push(
+                <ViewProject project={project}
+                    key={project.project} />
+            )
+        });
         return (
             <div>
                 <form className="form-horizontal" onSubmit={this.onSubmit.bind(this)}>
@@ -196,7 +229,6 @@ export default class AddProject extends React.Component {
                     </div>
                 </form>
                 <div className="modal fade" id="myModal" role="dialog">
-
                     <div className="modal-dialog">
                         <div className='modal-content'>
                             <div className='modal-header'>
@@ -217,7 +249,27 @@ export default class AddProject extends React.Component {
                             </div>
                         </div>
                     </div>
-
+                </div>
+                <div>
+                    <div>
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-12">
+                                    <span><input className="form-control" type="text" placeholder="Search..." onChange={this.filterList.bind(this)}></input></span>
+                                </div>
+                                </div>
+                                <div className="row">
+                                <div className="col-sm-12">
+                                    <span>Sort: <button type="button" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('startDate')}>Start Date</button>
+                                        <button type="button" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('endDate')}>End Date</button>
+                                        <button type="button" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('priority')}>Priority</button>
+                                        <button type="button" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('completed')}>Completed</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>{rows}</div>
                 </div>
             </div>
         )
