@@ -93,11 +93,6 @@ export default class AddUser extends React.Component {
             })
     }
 
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     // Only update if bricks change
-    //     return true
-    //   }
-
     delete = (u) => {
         console.log(u)
         axios.delete('http://localhost:8080/projectmanager/service/user/deleteUser/' + u.userId)
@@ -132,31 +127,30 @@ export default class AddUser extends React.Component {
                                 <div className="form-group form-group-sm col-sm-12">
                                     <div className="row">
                                         <label className="col-sm-3 col-form-label">First Name: </label>
-                                        <div class="col-sm-9">
-                                            <input type="text" className="form-control" value={this.state.firstName} onChange={this.onChangeFirstName.bind(this)} />
+                                        <div className="col-sm-9">
+                                            <input type="text" id= "firstName" className="form-control" value={this.state.firstName} onChange={this.onChangeFirstName.bind(this)} />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group-sm col-sm-12">
-                                    <div class="row">
-                                        <label class="col-sm-3 col-form-label">Last Name: </label>
-                                        <div class="col-sm-9">
-                                            <input type="text" className="form-control" value={this.state.lastName} onChange={this.onChangeLastName.bind(this)} />
+                                <div className="form-group form-group-sm col-sm-12">
+                                    <div className="row">
+                                        <label className="col-sm-3 col-form-label">Last Name: </label>
+                                        <div className="col-sm-9">
+                                            <input type="text" id="lastName" className="form-control" value={this.state.lastName} onChange={this.onChangeLastName.bind(this)} />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group-sm col-sm-12">
-                                    <div class="row">
-                                        <label class="col-sm-3 col-form-label">Employee ID: </label>
-                                        <div class="col-sm-9">
-                                            <input type="text" className="form-control" value={this.state.employeeId} onChange={this.onChangeEmployeeId.bind(this)} />
+                                <div className="form-group form-group-sm col-sm-12">
+                                    <div className="row">
+                                        <label className="col-sm-3 col-form-label">Employee ID: </label>
+                                        <div className="col-sm-9">
+                                            <input type="text" id="employeeId" className="form-control" value={this.state.employeeId} onChange={this.onChangeEmployeeId.bind(this)} />
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group-sm col-sm-12">
-                                    <div class="row">
-
-                                        <input type="submit" value="Add" className="btn btn-outline-dark" />
+                                <div className="form-group form-group-sm col-sm-12">
+                                    <div className="row">
+                                        <input type="submit" id="formSubmit" value="Add" className="btn btn-outline-dark" />
                                         <button type="button" className="btn btn-outline-dark" onClick={this.onReset.bind(this)}>Reset</button>
                                     </div>
                                 </div>
@@ -169,11 +163,11 @@ export default class AddUser extends React.Component {
                         <div className="container">
                             <div className="row">
                                 <div className="col-sm-6">
-                                    <span><input className="form-control" type="text" placeholder="Search..." onChange={this.filterList.bind(this)}></input></span>
+                                    <span><input className="form-control" type="text" id="searchFilter" placeholder="Search..." onChange={this.filterList.bind(this)}></input></span>
                                 </div>
                                 <div className="col-sm-6">
-                                    <span>Sort: <button type="button" className="btn btn-outline-dark" onClick={() => this.sortList('firstName')}>First Name</button>
-                                        <button type="button" className="btn btn-outline-dark" onClick={() => this.sortList('lastName')}>Last Name</button>
+                                    <span>Sort: <button type="button" id="byFirstName" className="btn btn-outline-dark" onClick={() => this.sortList('firstName')}>First Name</button>
+                                        <button type="button" id="byLastName" className="btn btn-outline-dark" onClick={() => this.sortList('lastName')}>Last Name</button>
                                         <button type="button" className="btn btn-outline-dark" onClick={() => this.sortList('employeeId')}>Id</button>
                                     </span>
                                 </div>

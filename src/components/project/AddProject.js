@@ -72,6 +72,20 @@ export default class AddProject extends React.Component {
         }
     }
 
+    compareBy = (key) => {
+        return function (a, b) {
+            if (a[key] < b[key]) return -1;
+            if (a[key] > b[key]) return 1;
+            return 0;
+        };
+    };
+
+    sortList = (key) => {
+        let arrayCopy = [...this.state.users];
+        arrayCopy.sort(this.compareBy(key));
+        this.setState({ users: arrayCopy });
+    };
+
     onChangeProject(e) {
         this.setState({
             project: e.target.value
@@ -185,10 +199,10 @@ export default class AddProject extends React.Component {
                                         </input>Set Start and End Date
                                     </div>
                                     <div class="col-sm-4">
-                                        <input type="date" defaultValue={this.state.startDate} onChange={this.onChangeStartDate.bind(this)}></input>
+                                        <input type="date" id="startDate" defaultValue={this.state.startDate} onChange={this.onChangeStartDate.bind(this)}></input>
                                     </div>
                                     <div class="col-sm-4">
-                                        <input type="date" defaultValue={this.state.endDate} onChange={this.onChangeEndDate.bind(this)}></input>
+                                        <input type="date" id="endDate" defaultValue={this.state.endDate} onChange={this.onChangeEndDate.bind(this)}></input>
                                     </div>
                                 </div>
                             </div>
@@ -210,19 +224,19 @@ export default class AddProject extends React.Component {
                                 <div class="row">
                                     <label class="col-sm-3 col-form-label"> Manager: </label>
                                     <div class="col-sm-7">
-                                        <input type="text" className="form-control" value={this.state.manager} onChange={this.onChangeManager.bind(this)} />
+                                        <input type="text" id="manager" className="form-control" value={this.state.manager} onChange={this.onChangeManager.bind(this)} />
                                     </div>
                                     <div class="col-sm-2">
 
-                                        <button type="button" className="btn btn-outline-dark" data-toggle="modal" data-target="#myModal" onClick={this.onSearch} >Search</button>
+                                        <button type="button" id="search" className="btn btn-outline-dark" data-toggle="modal" data-target="#myModal" onClick={this.onSearch} >Search</button>
 
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
-                                    <input type="submit" value="Add" className="btn btn-outline-dark" />
-                                    <button type="button" className="btn btn-outline-dark" onClick={this.onReset.bind(this)}>Reset</button>
+                                    <input type="submit" id="formSubmit" value="Add" className="btn btn-outline-dark" />
+                                    <button type="button" id="reset" className="btn btn-outline-dark" onClick={this.onReset.bind(this)}>Reset</button>
                                 </div>
                             </div>
                         </div>
@@ -260,10 +274,10 @@ export default class AddProject extends React.Component {
                                 </div>
                                 <div className="row">
                                 <div className="col-sm-12">
-                                    <span>Sort: <button type="button" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('startDate')}>Start Date</button>
-                                        <button type="button" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('endDate')}>End Date</button>
-                                        <button type="button" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('priority')}>Priority</button>
-                                        <button type="button" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('completed')}>Completed</button>
+                                    <span>Sort: <button type="button" id="byStartDate" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('startDate')}>Start Date</button>
+                                        <button type="button" id="byEndDate" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('endDate')}>End Date</button>
+                                        <button type="button" id="byPriority" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('priority')}>Priority</button>
+                                        <button type="button" id="byCompleted" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('completed')}>Completed</button>
                                     </span>
                                 </div>
                             </div>

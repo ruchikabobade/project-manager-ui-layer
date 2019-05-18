@@ -1,18 +1,44 @@
 import React from 'react'
 import axios from 'axios'
 export default class AddTask extends React.Component{
-    componentWillMount(){
+    constructor(props) {
+        super(props);
+        this.onChangeProject = this.onChangeProject.bind(this)
+        this.onChangeTask = this.onChangeTask.bind(this)
+        this.onChangeParentTask = this.onChangeParentTask.bind(this)
+        this.onChangeIsParent = this.onChangeIsParent.bind(this)
+        this.onChangeUser = this.onChangeUser.bind(this)
+        this.onChangeStartDate = this.onChangeStartDate.bind(this)
+        this.onChangePriority = this.onChangePriority.bind(this)
+        this.onChangeEndDate = this.onChangeEndDate.bind(this)
+
         this.state = {
             project: "",
             isParent: false,
-            startDate: "",
-            endDate: "",
-            priority: "",
-            user: "",
+            startDate: new Date(),
+            endDate: new Date(),
+            priority: 10,
+            manager: "",
+            users: [],
+            initialProjects: [],
+            projects: [],
             parentTask : "",
-            task: ""
+            task : "",
+            user :""
         }
     }
+    // componentWillMount(){
+    //     this.state = {
+    //         project: "",
+    //         isParent: false,
+    //         startDate: "",
+    //         endDate: "",
+    //         priority: "",
+    //         user: "",
+    //         parentTask : "",
+    //         task: ""
+    //     }
+    // }
     onChangeProject(e) {
         this.setState({
             project: e.target.value
@@ -107,16 +133,25 @@ export default class AddTask extends React.Component{
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
-                                    <input type="checkbox" name="task" value="true"></input>Parent Task
+                                <input type="checkbox"
+                                            name="date"
+                                            onChange={this.onChangeIsParent.bind(this)} >
+                                        </input>Parent Task
                                 </div>
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
                                     <label class="col-sm-3 col-form-label">Priority: </label>
-                                    <div class="col-sm-9">
-                                        <input type="text" className="form-control" value={this.state.project} onChange={this.onChangeProject.bind(this)}/>
+                                    <div class="col-sm-9 rangeIn">
+                                        <input type="range"
+                                            value={this.state.priority}
+                                            min="0"
+                                            max="20"
+                                            step="1"
+                                            className="slider" id="myRange"
+                                            onChange={this.onChangePriority.bind(this)} />
                                     </div>
-                                </div>
+                                    </div>
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">

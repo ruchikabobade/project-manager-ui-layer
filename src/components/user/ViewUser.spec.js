@@ -15,4 +15,12 @@ describe('ViewUser' , () => {
         expect(wrapper.find('input').length).toEqual(3);
     });
 
+    // it('should click sortBy EmployeeId', () => {
+    //     const wrapper = shallow(<ViewUser user={''} onSelectEditUser={''}/>)
+    //     const instance = wrapper.instance();
+    //     jest.spyOn(instance, 'updateUser');
+    //     wrapper.find('button').first().simulate('click');
+    //     expect(instance.updateUser).toHaveBeenCalled();
+    //   })
+
 })
