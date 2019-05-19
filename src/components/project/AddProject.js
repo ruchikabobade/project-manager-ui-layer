@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import DataTable from 'react-data-table-component'
 import ViewProject from './ViewProject'
-
+import Moment from 'moment'
 
 const columns = [
     {
@@ -48,7 +48,8 @@ export default class AddProject extends React.Component {
             manager: "",
             users: [],
             initialProjects: [],
-            projects: []
+            projects: [],
+            projectStatus : false
         }
     }
 
@@ -81,9 +82,10 @@ export default class AddProject extends React.Component {
     };
 
     sortList = (key) => {
-        let arrayCopy = [...this.state.users];
+        console.log("sort  ")
+        let arrayCopy = [...this.state.projects];
         arrayCopy.sort(this.compareBy(key));
-        this.setState({ users: arrayCopy });
+        this.setState({ projects: arrayCopy });
     };
 
     onChangeProject(e) {
@@ -132,7 +134,7 @@ export default class AddProject extends React.Component {
     }
 
     onSearch = () => {
-        axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
+        axios.get('http://localhost:8080/projectmanager/service/user/viewUserByFirstName/'+this.state.manager)
             .then(response => {
                 this.setState({ users: response.data });
             })
@@ -168,13 +170,36 @@ export default class AddProject extends React.Component {
         console.log(user);
     }
 
+    suspend = (p) => {
+        console.log(p)
+        axios.delete('http://localhost:8080/projectmanager/service/project/suspendProject/' + p.projectId)
+            .then(response => { 
+                this.setState({ projectStatus: response.data.status });
+            })
+    }
+
+    update = (p) => {
+        console.log(p)
+        const dateIn = this.formatDate(p.startDate)
+        const dateIn2 = this.formatDate(p.endDate)
+        this.setState({ project: p.project });
+        this.setState({ startDate: dateIn });
+        this.setState({ endDate: dateIn2 });
+        this.setState({ priority: p.priority });
+        this.setState({ manager : p.manager });
+        this.setState({ setDate : p.setDate });
+    }
+
+    formatDate =(inputDate) =>{
+        return Moment(inputDate).format("YYYY-MM-DD")
+    }
     render() {
         const rows = []
 
         this.state.projects.forEach((project) => {
             rows.push(
                 <ViewProject project={project}
-                    key={project.project} />
+                    key={project.project} onSelectSuspendProject={this.suspend} onSelectEditProject={this.update}/>
             )
         });
         return (

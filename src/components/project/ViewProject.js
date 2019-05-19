@@ -2,6 +2,32 @@ import React from 'react'
 import Moment from 'moment'
 
 export default class ViewProject extends React.Component {
+    suspendProject = () => {
+        var p = this.props.project
+        this.props.onSelectSuspendProject(p)
+    }
+
+    updateProject = () => {
+        var p = this.props.project
+        this.props.onSelectEditProject(p)
+    }
+
+    renderSuspend= () =>{
+        const p = this.props.project
+        if (p.status) {
+            return (
+                <div className="btn-user-row">
+                <button type="button" className="btn btn-outline-dark btn-block">Suspended</button>
+            </div>
+            );
+        } else {
+            return (
+                <div className="btn-user-row">
+                <button type="button" className="btn btn-outline-dark btn-block" onClick={this.suspendProject}>Suspend</button>
+            </div>
+            )
+        }
+    }
     render() {
         const project = this.props.project
         return (
@@ -41,11 +67,12 @@ export default class ViewProject extends React.Component {
                         </div>
                         <div className="col-sm-3">
                             <div className="btn-user-row">
-                                <button type="button" className="btn btn-outline-dark btn-block" onClick={this.updateUser}>Edit</button>
+                                <button type="button" className="btn btn-outline-dark btn-block" onClick={this.updateProject}>Edit</button>
                             </div>
-                            <div className="btn-user-row">
-                                <button type="button" className="btn btn-outline-dark btn-block" onClick={this.deleteUser}>Delete</button>
-                            </div>
+                            {this.renderSuspend()}
+                            {/* <div className="btn-user-row">
+                                <button type="button" className="btn btn-outline-dark btn-block" onClick={this.suspendProject}>Delete</button>
+                            </div> */}
                         </div>
                     </div>
                 </div>

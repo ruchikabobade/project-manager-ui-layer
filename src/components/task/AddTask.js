@@ -1,5 +1,37 @@
 import React from 'react'
 import axios from 'axios'
+import DataTable from 'react-data-table-component'
+
+const projectColumns = [
+    {
+        name: 'Project',
+        selector: 'project',
+        sortable: true,
+    },
+    {
+        name: 'Priority',
+        selector: 'priority',
+        sortable: true,
+    },
+];
+const userColumns = [
+    {
+        name: 'First Name',
+        selector: 'firstName',
+        sortable: true,
+    },
+    {
+        name: 'Last Name',
+        selector: 'lastName',
+        sortable: true,
+    },
+    {
+        name: 'Employee ID',
+        selector: 'employeeId',
+        sortable: true,
+    },
+];
+
 export default class AddTask extends React.Component{
     constructor(props) {
         super(props);
@@ -24,21 +56,11 @@ export default class AddTask extends React.Component{
             projects: [],
             parentTask : "",
             task : "",
-            user :""
+            user :"",
+            data:[],
+            key : ""
         }
     }
-    // componentWillMount(){
-    //     this.state = {
-    //         project: "",
-    //         isParent: false,
-    //         startDate: "",
-    //         endDate: "",
-    //         priority: "",
-    //         user: "",
-    //         parentTask : "",
-    //         task: ""
-    //     }
-    // }
     onChangeProject(e) {
         this.setState({
             project: e.target.value
@@ -97,52 +119,71 @@ export default class AddTask extends React.Component{
     onSubmit(e){
         e.preventDefault();
         const taskRecord = {
-            project : this.state.project,
             startDate : this.state.startDate,
             endDate : this.state.endDate,
             priority : this.state.priority,
-            user : this.state.user,
-            parentTask: this.state.parentTask,
             task: this.state.task
         }
-        axios.post('http://localhost:4000/serverport/add', taskRecord)
+        axios.post('http://localhost:8080/projectmanager/service/task/addtask', taskRecord)
         .then(res => console.log(res.data));
+    }
+
+    onSearch = (key) => {
+        this.setState({ key: key });
+        if(key === 'project'){   
+            axios.get('http://localhost:8080/projectmanager/service/project/viewProject')
+        .then(response => {
+            this.setState({ data: response.data });
+            })}
+        else{
+        axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
+            .then(response => {
+                this.setState({ data: response.data });
+            })
+        }
     }
 
     render(){
         return(
+            <div className="page-view">
             <div>
                 <form className="form-horizontal" onSubmit={this.onSubmit.bind(this)}>
                     <div class="container">
                         <div class="row">
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
-                                    <label class="col-sm-3 col-form-label"> Project: </label>
-                                    <div class="col-sm-9">
+                                    <label class="col-sm-2 col-form-label"> Project: </label>
+                                    <div class="col-sm-8">
                                         <input type="text" className="form-control" value={this.state.project} onChange={this.onChangeProject.bind(this)}/>
                                     </div>
+                                    <div class="col-sm-2">
+                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" data-target="#myModal-project" onClick={() => this.onSearch('project')} >Search</button>
+                                        </div>
                                 </div>
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
-                                    <label class="col-sm-3 col-form-label">Task: </label>
-                                    <div class="col-sm-9">
+                                    <label class="col-sm-2 col-form-label">Task: </label>
+                                    <div class="col-sm-10">
                                          <input type="text" className="form-control" value={this.state.task} onChange={this.onChangeTask.bind(this)}/>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-10">
                                 <input type="checkbox"
                                             name="date"
                                             onChange={this.onChangeIsParent.bind(this)} >
                                         </input>Parent Task
+                                        </div>
                                 </div>
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
-                                    <label class="col-sm-3 col-form-label">Priority: </label>
-                                    <div class="col-sm-9 rangeIn">
+                                    <label class="col-sm-2 col-form-label">Priority: </label>
+                                    <div class="col-sm-10 rangeIn">
                                         <input type="range"
                                             value={this.state.priority}
                                             min="0"
@@ -155,37 +196,94 @@ export default class AddTask extends React.Component{
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
-                                    <label class="col-sm-3 col-form-label">Parent Task: </label>
-                                    <div class="col-sm-9">
+                                    <label class="col-sm-2 col-form-label">Parent Task: </label>
+                                    <div class="col-sm-8">
                                         <input type="text" className="form-control" value={this.state.parentTask} onChange={this.onChangeParentTask.bind(this)}/>
                                     </div>
+                                    <div class="col-sm-2">
+                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" data-target="#myModal" onClick={() => this.sortList('parentTask')} >Search</button>
+                                        </div>
                                 </div>
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
-                                    <label class="col-sm-3 col-form-label">Start Date: </label>
-                                        <input type="date" value= "start date"></input>
-                                    <label>End Date: </label>
-                                        <input type="date" value= "end date"></input>
+                                    <label class="col-sm-2 col-form-label">Start Date: </label>
+                                    <div class="col-sm-4"> <input type="date" value= "start date"></input></div>
+                                    <label className="col-sm-2 ">End Date: </label>
+                                    <div class="col-sm-4">  <input type="date" value= "end date"></input></div>
                                 </div>
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
-                                    <label class="col-sm-3 col-form-label">User: </label>
-                                    <div class="col-sm-9">
+                                    <label class="col-sm-2 col-form-label">User: </label>
+                                    <div class="col-sm-8">
                                         <input type="text" className="form-control" value={this.state.user} onChange={this.onChangeUser.bind(this)}/>
                                     </div>
+                                    <div class="col-sm-2">
+                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" data-target="#myModal-user" onClick={() => this.onSearch('user')} >Search</button>
+                                        </div>
                                 </div>
                             </div>
-                    
-                            <div className="form-group">
-                                <input type="submit" value="Add" className="btn btn-outline-dark"/>
-                                <button type="button" className="btn btn-outline-dark" onClick={this.onReset.bind(this)}>Reset</button>
-                            </div>
+                
+                            <div class="form-group form-group-sm col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-8"></div>
+                                        <div className="col-sm-4">
+                                            <span className="button-space">
+                                                <input type="submit" id="formSubmit" value="Add Task" className="btn btn-outline-dark custom" /></span>
+                                            <span className="button-space">  <button type="button" id="reset" className="btn btn-outline-dark custom" onClick={this.onReset.bind(this)}>Reset</button></span>
+                                        </div>
+                                    </div>
+                                </div>
                     </div>
                     </div>
                 </form>
             </div>
+            <div className="modal fade" id="myModal-user" role="dialog">
+            <div className="modal-dialog">
+                <div className='modal-content'>
+                    <div className='modal-header'>
+                        <h5 className='modal-title'>Search Manager</h5>
+                        <button type='button' className='close' data-dismiss='modal'>&times;</button>
+                    </div>
+                    <div className='modal-body'>
+                        <DataTable
+                            title="Users Details"
+                            columns={userColumns}
+                            data={this.state.data}
+                            selectableRows
+                            onTableUpdate={this.handleChange}>
+                        </DataTable>
+                    </div>
+                    <div className='modal-footer'>
+                        <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className="modal fade" id="myModal-project" role="dialog">
+            <div className="modal-dialog">
+                <div className='modal-content'>
+                    <div className='modal-header'>
+                        <h5 className='modal-title'>Search Manager</h5>
+                        <button type='button' className='close' data-dismiss='modal'>&times;</button>
+                    </div>
+                    <div className='modal-body'>
+                        <DataTable
+                            title="Project Details"
+                            columns={projectColumns}
+                            data={this.state.data}
+                            selectableRows
+                            onTableUpdate={this.handleChange}>
+                        </DataTable>
+                    </div>
+                    <div className='modal-footer'>
+                        <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        </div>
         )
     }
 }
