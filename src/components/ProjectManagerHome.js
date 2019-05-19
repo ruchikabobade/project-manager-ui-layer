@@ -10,7 +10,10 @@ import User from './user/User'
 export default class ProjectManagerHome extends React.Component {
     render(){
         return(
-            <div>
+            <div className="container homepage">
+                 <div className="row">
+                 <div className="col-sm-2"></div>
+                 <div className="col-sm-8">
                 <div>
                     <h3>Project Manager</h3>
                 </div>
@@ -33,6 +36,10 @@ export default class ProjectManagerHome extends React.Component {
                 </div>
           
             </HashRouter>
+            </div>
+           
+            <div className="col-sm-2"></div>
+            </div>
             </div>
         )
     }

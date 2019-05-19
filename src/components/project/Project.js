@@ -6,7 +6,7 @@ export default class Project extends React.Component{
         return(
 
             <div>
-                <div><AddProject></AddProject></div>
+                <div className="page-view"><AddProject></AddProject></div>
             </div>
         )
     }

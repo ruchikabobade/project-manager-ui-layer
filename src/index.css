@@ -23,11 +23,6 @@ code {
   padding: 10px;
 }
 
-.user{
-  float: left;
-  clear: both;
-  padding: 10px;
-}
 
 .slider{
   -webkit-appearance: none;
@@ -90,11 +85,71 @@ align-items: center;
 .display-none {
   display: none;
 }
+.page-view{
+  float: left;
+  clear: both;
+  padding: 10px;
+}
+
+.form-component{
+  border-bottom: 3px solid blue;
+}
+
+.view-component{
+  padding-top: 2%;
+}
 
 .viewUser{
   padding: 5px;
+  padding-top : 1%;
+}
+.viewUser, .sort-filter{
+  padding-bottom: 2%;
+  border-bottom: 3px dotted black;
+}
+.span-user{
+  padding-bottom: 5px;
 }
 
 .space {
   padding: 1px;
+}
+
+.homepage{
+  padding-top: 3%;
+}
+ 
+.button-space{
+  padding-right: 2%;
+}
+ .custom{
+   width: 45% !important;
+ }
+ .custom-sort{
+  width: 28% !important;
+}
+
+.button-space-sort{
+  padding-right: 1%;;
+}
+
+.sort{
+  padding-right: 1%;
+}
+
+.user-row{
+  padding-top : 1%;
+}
+.btn-user-row{
+  padding-top : 3%;
+}
+#startDate, #endDate{
+  width: 100% !important;
+}
+.setDate{
+  padding-left: 1%;
+}
+.greyBox{
+  background-color: #c9c1c1;
+  height: 65% !important;
 }

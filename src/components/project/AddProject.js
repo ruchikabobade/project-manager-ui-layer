@@ -23,10 +23,10 @@ const columns = [
 ];
 
 const user = {
-    userId : '',
-    firstName : '',
+    userId: '',
+    firstName: '',
     lastName: '',
-    employeeId : '',
+    employeeId: '',
 }
 
 export default class AddProject extends React.Component {
@@ -179,69 +179,74 @@ export default class AddProject extends React.Component {
         });
         return (
             <div>
-                <form className="form-horizontal" onSubmit={this.onSubmit.bind(this)}>
-                    <div class="container">
-                        <div class="row">
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <label class="col-sm-3 col-form-label"> Project: </label>
-                                    <div class="col-sm-9">
-                                        <input type="text" className="form-control" value={this.state.project} onChange={this.onChangeProject.bind(this)} />
+                <div className="form-component">
+                    <form className="form-horizontal" onSubmit={this.onSubmit.bind(this)}>
+                        <div className="container">
+                            <div className="row">
+                                <div className="form-group form-group-sm col-sm-12">
+                                    <div className="row">
+                                        <label className="col-sm-2 col-form-label"> Project: </label>
+                                        <div className="col-sm-10">
+                                            <input type="text" className="form-control" value={this.state.project} onChange={this.onChangeProject.bind(this)} />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <input type="checkbox"
-                                            name="date"
-                                            onChange={this.onChangeSetDate.bind(this)} >
-                                        </input>Set Start and End Date
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="date" id="startDate" defaultValue={this.state.startDate} onChange={this.onChangeStartDate.bind(this)}></input>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="date" id="endDate" defaultValue={this.state.endDate} onChange={this.onChangeEndDate.bind(this)}></input>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <label class="col-sm-3 col-form-label"> Priority: </label>
-                                    <div class="col-sm-9 rangeIn">
-                                        <input type="range"
-                                            value={this.state.priority}
-                                            min="0"
-                                            max="20"
-                                            step="1"
-                                            className="slider" id="myRange"
-                                            onChange={this.onChangePriority.bind(this)} />
+                                <div className="form-group form-group-sm col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-2"></div>
+                                        <div class="col-sm-4">
+                                            <input type="checkbox"
+                                                name="date"
+                                                onChange={this.onChangeSetDate.bind(this)} >
+                                            </input> <span className="setDate">Set Start and End Date</span>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="date" id="startDate" defaultValue={this.state.startDate} onChange={this.onChangeStartDate.bind(this)}></input>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="date" id="endDate" defaultValue={this.state.endDate} onChange={this.onChangeEndDate.bind(this)}></input>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <label class="col-sm-3 col-form-label"> Manager: </label>
-                                    <div class="col-sm-7">
-                                        <input type="text" id="manager" className="form-control" value={this.state.manager} onChange={this.onChangeManager.bind(this)} />
-                                    </div>
-                                    <div class="col-sm-2">
-
-                                        <button type="button" id="search" className="btn btn-outline-dark" data-toggle="modal" data-target="#myModal" onClick={this.onSearch} >Search</button>
-
+                                <div class="form-group form-group-sm col-sm-12">
+                                    <div class="row">
+                                        <label class="col-sm-2 col-form-label"> Priority: </label>
+                                        <div class="col-sm-10 rangeIn">
+                                            <input type="range"
+                                                value={this.state.priority}
+                                                min="0"
+                                                max="20"
+                                                step="1"
+                                                className="slider" id="myRange"
+                                                onChange={this.onChangePriority.bind(this)} />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <input type="submit" id="formSubmit" value="Add" className="btn btn-outline-dark" />
-                                    <button type="button" id="reset" className="btn btn-outline-dark" onClick={this.onReset.bind(this)}>Reset</button>
+                                <div class="form-group form-group-sm col-sm-12">
+                                    <div class="row">
+                                        <label class="col-sm-2 col-form-label"> Manager: </label>
+                                        <div class="col-sm-8">
+                                            <input type="text" id="manager" className="form-control" value={this.state.manager} onChange={this.onChangeManager.bind(this)} />
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" data-target="#myModal" onClick={this.onSearch} >Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-sm col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-8"></div>
+                                        <div className="col-sm-4">
+                                            <span className="button-space">
+                                                <input type="submit" id="formSubmit" value="Add" className="btn btn-outline-dark custom" /></span>
+                                            <span className="button-space">  <button type="button" id="reset" className="btn btn-outline-dark custom" onClick={this.onReset.bind(this)}>Reset</button></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
                 <div className="modal fade" id="myModal" role="dialog">
                     <div className="modal-dialog">
                         <div className='modal-content'>
@@ -264,22 +269,34 @@ export default class AddProject extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div>
+                <div className="view-component">
                     <div>
                         <div className="container">
                             <div className="row">
                                 <div className="col-sm-12">
                                     <span><input className="form-control" type="text" placeholder="Search..." onChange={this.filterList.bind(this)}></input></span>
                                 </div>
-                                </div>
-                                <div className="row">
-                                <div className="col-sm-12">
-                                    <span>Sort: <button type="button" id="byStartDate" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('startDate')}>Start Date</button>
-                                        <button type="button" id="byEndDate" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('endDate')}>End Date</button>
-                                        <button type="button" id="byPriority" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('priority')}>Priority</button>
-                                        <button type="button" id="byCompleted" className="btn btn-outline-dark col-sm-2" onClick={() => this.sortList('completed')}>Completed</button>
+                            </div>
+                            <div className="row view-component">
+                                <span className="col-sm-2">Sort By:</span>
+                                <span className="col-sm-5">
+                                    <span className="row">
+                                        <span className="col-sm-6">
+                                            <button type="button" id="byStartDate" className="btn btn-outline-dark btn-block " onClick={() => this.sortList('startDate')}>Start Date</button>
+                                        </span>
+                                        <span className="col-sm-6">
+                                            <button type="button" id="byEndDate" className="btn btn-outline-dark btn-block" onClick={() => this.sortList('endDate')}>End Date</button>
+                                        </span>
+                                    </span></span>
+                                <span className="col-sm-5">
+                                    <span className="row">
+                                        <span className="col-sm-6">
+                                            <button type="button" id="byPriority" className="btn btn-outline-dark btn-block" onClick={() => this.sortList('priority')}>Priority</button>
+                                        </span> <span className="col-sm-6">
+                                            <button type="button" id="byCompleted" className="btn btn-outline-dark btn-block" onClick={() => this.sortList('completed')}>Completed</button>
+                                        </span>
                                     </span>
-                                </div>
+                                </span>
                             </div>
                         </div>
                     </div>

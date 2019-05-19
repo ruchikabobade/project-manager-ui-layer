@@ -15,7 +15,8 @@ export default class AddUser extends React.Component {
             employeeId: "",
             userId: 0,
             users: [],
-            initialUsers: []
+            initialUsers: [],
+            statusButton: false
         }
     }
 
@@ -81,11 +82,28 @@ export default class AddUser extends React.Component {
         const userRecord = {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
-            employeeId: this.state.employeeId
+            employeeId: this.state.employeeId,
+            userId: this.state.userId
         }
-        axios.post('http://localhost:8080/projectmanager/service/user/addUser', userRecord
+        const project = {
+            projectId : 0
+        }
+        const record = {
+            taskId: 0,
+            task: "",
+            user: userRecord,
+            project: project
+        }
+        if (this.state.statusButton){
+            console.log("update")
+            axios.put('http://localhost:8080/projectmanager/service/user/updateUser', record
         ).then(res => console.log(res.data));
-
+       
+        }
+        else{
+            axios.post('http://localhost:8080/projectmanager/service/user/addUser', userRecord
+        ).then(res => console.log(res.data));
+        }
         axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
             .then(response => {
                 this.setState({ initialUsers: response.data });
@@ -105,12 +123,30 @@ export default class AddUser extends React.Component {
         this.setState({ lastName: u.lastName });
         this.setState({ employeeId: u.employeeId });
         this.setState({ userId: u.userId });
+        this.setState({ statusButton: true });
+        this.renderCancel()
+
+    }
+   
+    renderCancel= () =>{
+        if (this.state.statusButton) {
+            return (
+                <span className="button-space">
+                                        <input type="submit" id="formSubmit" value="Update" className="btn btn-outline-dark custom" />
+                                        </span>
+            );
+        } else {
+            return (
+                <span className="button-space">
+                                        <input type="submit" id="formSubmit" value="Add" className="btn btn-outline-dark custom" />
+                                        </span>
+            );
+        }
     }
 
 
     render() {
         const rows = []
-
         this.state.users.forEach((user) => {
             rows.push(
                 <ViewUser user={user}
@@ -120,7 +156,7 @@ export default class AddUser extends React.Component {
 
         return (
             <div>
-                <div>
+                <div className="form-component">
                     <form className="form-horizontal" onSubmit={this.onSubmit.bind(this)}>
                         <div className="container">
                             <div className="row">
@@ -128,7 +164,7 @@ export default class AddUser extends React.Component {
                                     <div className="row">
                                         <label className="col-sm-3 col-form-label">First Name: </label>
                                         <div className="col-sm-9">
-                                            <input type="text" id= "firstName" className="form-control" value={this.state.firstName} onChange={this.onChangeFirstName.bind(this)} />
+                                            <input type="text" id="firstName" className="form-control" value={this.state.firstName} onChange={this.onChangeFirstName.bind(this)} />
                                         </div>
                                     </div>
                                 </div>
@@ -143,33 +179,36 @@ export default class AddUser extends React.Component {
                                 <div className="form-group form-group-sm col-sm-12">
                                     <div className="row">
                                         <label className="col-sm-3 col-form-label">Employee ID: </label>
-                                        <div className="col-sm-9">
+                                        <div className="col-sm-4">
                                             <input type="text" id="employeeId" className="form-control" value={this.state.employeeId} onChange={this.onChangeEmployeeId.bind(this)} />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="form-group form-group-sm col-sm-12">
                                     <div className="row">
-                                        <input type="submit" id="formSubmit" value="Add" className="btn btn-outline-dark" />
-                                        <button type="button" className="btn btn-outline-dark" onClick={this.onReset.bind(this)}>Reset</button>
+                                    <div className="col-sm-8"></div>
+                                    <div className="col-sm-4">
+                                    {this.renderCancel()}  
+                                        <span className="button-space"><button type="button" className="btn btn-outline-dark custom" onClick={this.onReset.bind(this)}>Reset</button></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div>
-                    <div>
+                <div className="view-component">
+                    <div className="sort-filter">
                         <div className="container">
                             <div className="row">
-                                <div className="col-sm-6">
+                                <div className="col-sm-4">
                                     <span><input className="form-control" type="text" id="searchFilter" placeholder="Search..." onChange={this.filterList.bind(this)}></input></span>
                                 </div>
-                                <div className="col-sm-6">
-                                    <span>Sort: <button type="button" id="byFirstName" className="btn btn-outline-dark" onClick={() => this.sortList('firstName')}>First Name</button>
-                                        <button type="button" id="byLastName" className="btn btn-outline-dark" onClick={() => this.sortList('lastName')}>Last Name</button>
-                                        <button type="button" className="btn btn-outline-dark" onClick={() => this.sortList('employeeId')}>Id</button>
-                                    </span>
+                                <div className="col-sm-8">
+                                    <span className="sort">Sort: </span>
+                                    <span className="button-space-sort"><button type="button" id="byFirstName" className="btn btn-outline-dark custom-sort" onClick={() => this.sortList('firstName')}>First Name</button></span>
+                                    <span className="button-space-sort"><button type="button" id="byLastName" className="btn btn-outline-dark custom-sort" onClick={() => this.sortList('lastName')}>Last Name</button></span>
+                                    <span className="button-space-sort"><button type="button" className="btn btn-outline-dark custom-sort" onClick={() => this.sortList('employeeId')}>Id</button></span>  
                                 </div>
                             </div>
                         </div>
