@@ -31,7 +31,19 @@ const userColumns = [
         sortable: true,
     },
 ];
-
+const user = {
+    userId: '',
+    firstName: '',
+    lastName: '',
+    employeeId: '',
+}
+const project = {
+    projectId: '',
+    project: '',
+    startDate: '',
+    endDate: '',
+    priority: '',
+}
 export default class AddTask extends React.Component{
     constructor(props) {
         super(props);
@@ -66,10 +78,14 @@ export default class AddTask extends React.Component{
             project: e.target.value
         });
     }
-    onChangeIsParent(e) {
-        this.setState({
-            isParent: e.target.value
-        });
+ 
+    onChangeIsParent = () => {
+        if (this.state.isParent === true) {
+            this.setState({  isParent: false })
+        }
+        else {
+            this.setState({  isParent: true })
+        }
     }
     onChangeStartDate(e) {
         this.setState({
@@ -122,8 +138,12 @@ export default class AddTask extends React.Component{
             startDate : this.state.startDate,
             endDate : this.state.endDate,
             priority : this.state.priority,
-            task: this.state.task
+            task: this.state.task,
+            isParent: this.state.isParent,
+            project: project,
+            user: user
         }
+        console.log(taskRecord)
         axios.post('http://localhost:8080/projectmanager/service/task/addtask', taskRecord)
         .then(res => console.log(res.data));
     }
@@ -131,18 +151,35 @@ export default class AddTask extends React.Component{
     onSearch = (key) => {
         this.setState({ key: key });
         if(key === 'project'){   
-            axios.get('http://localhost:8080/projectmanager/service/project/viewProject')
+            axios.get('http://localhost:8080/projectmanager/service/project/viewProjectByProject/'+ this.state.project)
         .then(response => {
             this.setState({ data: response.data });
             })}
         else{
-        axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
+        axios.get('http://localhost:8080/projectmanager/service/user/viewUserByFirstName/'+this.state.user)
             .then(response => {
                 this.setState({ data: response.data });
             })
         }
     }
+    handleChangeUser = (state) => {
+        user.userId = state.selectedRows[0].userId
+        user.firstName = state.selectedRows[0].firstName
+        user.lastName = state.selectedRows[0].lastName
+        user.employeeId = state.selectedRows[0].employeeId
+        console.log('Selected Rows: ', state.selectedRows);
+        console.log(user);
+    }
 
+    handleChangeProject = (state) => {
+        project.projectId = state.selectedRows[0].projectId
+        project.project = state.selectedRows[0].project
+        project.priority = state.selectedRows[0].priority
+        project.startDate = state.selectedRows[0].startDate
+        project.endDate = state.selectedRows[0].endDate
+        console.log('Selected Rows: ', state.selectedRows);
+        console.log(project);
+    }
     render(){
         return(
             <div className="page-view">
@@ -175,6 +212,7 @@ export default class AddTask extends React.Component{
                                 <div class="col-sm-10">
                                 <input type="checkbox"
                                             name="date"
+                                            checked={this.state.isParent}
                                             onChange={this.onChangeIsParent.bind(this)} >
                                         </input>Parent Task
                                         </div>
@@ -208,9 +246,9 @@ export default class AddTask extends React.Component{
                             <div class="form-group form-group-sm col-sm-12">
                                 <div class="row">
                                     <label class="col-sm-2 col-form-label">Start Date: </label>
-                                    <div class="col-sm-4"> <input type="date" value= "start date"></input></div>
+                                    <div class="col-sm-4"> <input type="date" defaultValue={this.state.startDate} onChange={this.onChangeStartDate.bind(this)}></input></div>
                                     <label className="col-sm-2 ">End Date: </label>
-                                    <div class="col-sm-4">  <input type="date" value= "end date"></input></div>
+                                    <div class="col-sm-4">  <input type="date" defaultValue={this.state.endDate} onChange={this.onChangeEndDate.bind(this)}></input></div>
                                 </div>
                             </div>
                             <div class="form-group form-group-sm col-sm-12">
@@ -252,7 +290,7 @@ export default class AddTask extends React.Component{
                             columns={userColumns}
                             data={this.state.data}
                             selectableRows
-                            onTableUpdate={this.handleChange}>
+                            onTableUpdate={this.handleChangeUser}>
                         </DataTable>
                     </div>
                     <div className='modal-footer'>
@@ -274,7 +312,7 @@ export default class AddTask extends React.Component{
                             columns={projectColumns}
                             data={this.state.data}
                             selectableRows
-                            onTableUpdate={this.handleChange}>
+                            onTableUpdate={this.handleChangeProject}>
                         </DataTable>
                     </div>
                     <div className='modal-footer'>

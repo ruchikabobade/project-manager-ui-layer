@@ -222,6 +222,7 @@ export default class AddProject extends React.Component {
                                         <div class="col-sm-4">
                                             <input type="checkbox"
                                                 name="date"
+                                                checked={this.state.setDate}
                                                 onChange={this.onChangeSetDate.bind(this)} >
                                             </input> <span className="setDate">Set Start and End Date</span>
                                         </div>
