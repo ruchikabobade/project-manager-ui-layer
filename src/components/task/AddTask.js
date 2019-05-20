@@ -14,6 +14,18 @@ const projectColumns = [
         sortable: true,
     },
 ];
+const taskColumns = [
+    {
+        name: 'Task Id',
+        selector: 'parentId',
+        sortable: true,
+    },
+    {
+        name: 'Task',
+        selector: 'parentTask',
+        sortable: true,
+    },
+];
 const userColumns = [
     {
         name: 'First Name',
@@ -43,6 +55,10 @@ const project = {
     startDate: '',
     endDate: '',
     priority: '',
+}
+const parentTask = {
+    parentId: '',
+    parentTask: '',
 }
 export default class AddTask extends React.Component{
     constructor(props) {
@@ -141,7 +157,8 @@ export default class AddTask extends React.Component{
             task: this.state.task,
             isParent: this.state.isParent,
             project: project,
-            user: user
+            user: user,
+            parentTask: parentTask
         }
         console.log(taskRecord)
         axios.post('http://localhost:8080/projectmanager/service/task/addtask', taskRecord)
@@ -155,12 +172,18 @@ export default class AddTask extends React.Component{
         .then(response => {
             this.setState({ data: response.data });
             })}
-        else{
+            if(key === 'user'){
         axios.get('http://localhost:8080/projectmanager/service/user/viewUserByFirstName/'+this.state.user)
             .then(response => {
                 this.setState({ data: response.data });
             })
         }
+        if(key === 'parent'){
+            axios.get('http://localhost:8080/projectmanager/service/task/viewTaskByParent/'+this.state.parentTask)
+                .then(response => {
+                    this.setState({ data: response.data });
+                })
+            }
     }
     handleChangeUser = (state) => {
         user.userId = state.selectedRows[0].userId
@@ -180,9 +203,17 @@ export default class AddTask extends React.Component{
         console.log('Selected Rows: ', state.selectedRows);
         console.log(project);
     }
+
+    handleChangeParentTask = (state) => {
+        parentTask.parentId = state.selectedRows[0].parentId
+        parentTask.parentTask = state.selectedRows[0].parentTask
+        console.log('Selected Rows: ', state.selectedRows);
+        console.log(parentTask);
+    }
     render(){
         return(
-            <div className="page-view">
+            <div className="row">
+            <div className="page-view col-sm-10">
             <div>
                 <form className="form-horizontal" onSubmit={this.onSubmit.bind(this)}>
                     <div class="container">
@@ -239,7 +270,7 @@ export default class AddTask extends React.Component{
                                         <input type="text" className="form-control" value={this.state.parentTask} onChange={this.onChangeParentTask.bind(this)}/>
                                     </div>
                                     <div class="col-sm-2">
-                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" data-target="#myModal" onClick={() => this.sortList('parentTask')} >Search</button>
+                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" data-target="#myModal-task" onClick={() => this.onSearch('parent')} >Search</button>
                                         </div>
                                 </div>
                             </div>
@@ -321,7 +352,31 @@ export default class AddTask extends React.Component{
                 </div>
             </div>
         </div> 
+        <div className="modal fade" id="myModal-task" role="dialog">
+            <div className="modal-dialog">
+                <div className='modal-content'>
+                    <div className='modal-header'>
+                        <h5 className='modal-title'>Search Manager</h5>
+                        <button type='button' className='close' data-dismiss='modal'>&times;</button>
+                    </div>
+                    <div className='modal-body'>
+                        <DataTable
+                            title="Parent Task Details"
+                            columns={taskColumns}
+                            data={this.state.data}
+                            selectableRows
+                            onTableUpdate={this.handleChangeParentTask}>
+                        </DataTable>
+                    </div>
+                    <div className='modal-footer'>
+                        <button type='button' className='btn btn-default' data-dismiss='modal'>Close</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
         </div>
+        <div className="col-sm-2"></div>
+            </div>
         )
     }
 }

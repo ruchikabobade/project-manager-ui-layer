@@ -12,8 +12,8 @@ export default class ProjectManagerHome extends React.Component {
         return(
             <div className="container homepage">
                  <div className="row">
-                 <div className="col-sm-2"></div>
-                 <div className="col-sm-8">
+                 <div className="col-sm-1"></div>
+                 <div className="col-sm-10">
                 <div>
                     <h3>Project Manager</h3>
                 </div>
@@ -38,7 +38,7 @@ export default class ProjectManagerHome extends React.Component {
             </HashRouter>
             </div>
            
-            <div className="col-sm-2"></div>
+            <div className="col-sm-1"></div>
             </div>
             </div>
         )

@@ -5,8 +5,9 @@ export default class Project extends React.Component{
     render(){
         return(
 
-            <div>
-                <div className="page-view"><AddProject></AddProject></div>
+            <div className="row">
+            <div className="page-view col-sm-10"><AddProject></AddProject></div>
+            <div className="col-sm-2"></div>
             </div>
         )
     }
