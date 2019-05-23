@@ -1,22 +1,21 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import Enzyme, { mount, shallow } from 'enzyme';
+
+import Adapter from 'enzyme-adapter-react-16';
 import ViewTask from './ViewTask';
 
+Enzyme.configure({ adapter: new Adapter() });
 
 describe('ViewTask' , () => {
     let wrapper;
     beforeEach(() => wrapper = shallow(<ViewTask/>))
 
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(1);
-    });
-
-    it('should render a <form/>', () => {
-        expect(wrapper.find('form').length).toEqual(1);
+        expect(wrapper.find('div').length).toEqual(11);
     });
 
     it('should render a <span/>', () => {
-        expect(wrapper.find('span').length).toEqual(2);
+        expect(wrapper.find('span').length).toEqual(9);
     });
 
     it('should render a <input/>', () => {

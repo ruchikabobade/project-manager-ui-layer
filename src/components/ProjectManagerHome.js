@@ -32,6 +32,7 @@ export default class ProjectManagerHome extends React.Component {
                     <Route path="/addProject" component={Project}></Route>
                     <Route path="/addUser" component={User}></Route>
                     <Route path="/addTask" component={AddTask}></Route>
+                    <Route path="/updateTask/:id" component={AddTask}></Route>
                     <Route path="/viewTask" component={ViewTask}></Route>
                 </div>
           

@@ -12,7 +12,7 @@ describe('ProjectManagerHome', () => {
     beforeEach(() => wrapper = shallow(<ProjectManagerHome/>))
     
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(3);
+        expect(wrapper.find('div').length).toEqual(7);
     });
     
     it('should render a <li/>', () => {

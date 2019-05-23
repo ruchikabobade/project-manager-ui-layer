@@ -10,7 +10,7 @@ describe('User', () => {
     beforeEach(() => wrapper = shallow(<User/>))
     
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(2);
+        expect(wrapper.find('div').length).toEqual(3);
     });
 
     it('should render the AddUser Component', () => {

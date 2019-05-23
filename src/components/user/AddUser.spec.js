@@ -13,7 +13,7 @@ describe('AddUser', () => {
   // it('should render correctly', () => expect(wrapper).toMatchSnapshot());
 
   it('should render a <div/>', () => {
-    expect(wrapper.find('div').length).toEqual(22);
+    expect(wrapper.find('div').length).toEqual(24);
   });
 
   it('should render a <form/>', () => {
@@ -25,7 +25,7 @@ describe('AddUser', () => {
   });
 
   it('should render a <span/>', () => {
-    expect(wrapper.find('span').length).toEqual(2);
+    expect(wrapper.find('span').length).toEqual(7);
   });
 
   it('should render a <button/>', () => {

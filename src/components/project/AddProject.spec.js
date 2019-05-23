@@ -9,7 +9,7 @@ describe('AddProject' , () => {
     beforeEach(() => wrapper = shallow(<AddProject/>))
 
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(34);
+        expect(wrapper.find('div').length).toEqual(37);
     });
 
     it('should render a <form/>', () => {

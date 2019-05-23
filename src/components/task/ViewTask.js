@@ -8,22 +8,30 @@ export default class ViewTask extends React.Component {
 
         this.state = {
             tasks: [],
-            initialTasks: []
+            initialtasks: []
         }
     }
 
     componentWillMount() {
         axios.get('http://localhost:8080/projectmanager/service/task/viewTask')
             .then(response => {
-                this.setState({ initialTasks: response.data });
+                this.setState({ initialtasks: response.data });
                 this.setState({ tasks: response.data });
                 console.log(this.state.tasks)
             })
     }
+
+    endTask = (t) =>{
+        console.log(t)
+        axios.delete('http://localhost:8080/projectmanager/service/task/endTask/' + t.taskId)
+            .then(response => { 
+            })
+    }
+
     filterList(e) {
         var updatedList = this.state.initialtasks;
         updatedList = updatedList.filter(function (task) {
-            return task.task.toLowerCase().search(
+            return task.project.project.toLowerCase().search(
                 e.target.value.toLowerCase()) !== -1;
         });
 
@@ -34,8 +42,8 @@ export default class ViewTask extends React.Component {
 
     compareBy = (key) => {
         return function (a, b) {
-            if (a[key] < b[key]) return -1;
-            if (a[key] > b[key]) return 1;
+            if (a[key] < b[key]) return 1;
+            if (a[key] > b[key]) return -1;
             return 0;
         };
     };
@@ -45,13 +53,20 @@ export default class ViewTask extends React.Component {
         arrayCopy.sort(this.compareBy(key));
         this.setState({ tasks: arrayCopy });
     };
+
+    onSearch =() =>{
+        var project = 
+        this.sortList('')
+    }
     render() {
         const rows = []
 
         this.state.tasks.forEach((task) => {
             rows.push(
                 <ViewTaskList task={task}
-                    key={task.taskId}/>
+                    key={task.taskId}
+                    onSelectEndTask={this.endTask}
+                    onSelectEditTask={this.update}/>
             )
         });
         return (
@@ -87,7 +102,7 @@ export default class ViewTask extends React.Component {
                                                 <span className="col-sm-6">
                                                     <button type="button" id="byPriority" className="btn btn-outline-dark" onClick={() => this.sortList('priority')}>Priority</button>
                                                 </span> <span className="col-sm-6">
-                                                    <button type="button" id="byCompleted" className="btn btn-outline-dark" onClick={() => this.sortList('completed')}>Completed</button>
+                                                    <button type="button" id="byCompleted" className="btn btn-outline-dark" onClick={() => this.sortList('status')}>Completed</button>
                                                 </span>
                                             </span>
                                         </span>
@@ -95,10 +110,9 @@ export default class ViewTask extends React.Component {
                                 </div>
                             </div>
                         </div>
-                      
                     </div>
                       <div>{rows}</div>
-                      </div>
+                </div>
         )
     }
 }

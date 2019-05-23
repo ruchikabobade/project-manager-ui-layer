@@ -30,7 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "cross-env CI=true react-scripts test --env=jsdom",
+    "test": "react-scripts test",
     "test:watch": "jest --watchAll --verbose",
     "eject": "react-scripts eject"
   },
@@ -52,5 +52,4 @@
     "react-addons-test-utils": "^15.6.2",
     "react-test-renderer": "^16.8.6"
   }
-  
 }

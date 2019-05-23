@@ -30,6 +30,7 @@ export default class ViewProject extends React.Component {
     }
     render() {
         const project = this.props.project
+        console.log("project prop: ",project)
         return (
             <div className="viewUser">
                 <div className="container">
@@ -42,11 +43,11 @@ export default class ViewProject extends React.Component {
                             <div className="row">
                                 <span className="col-sm-6">
                                     <label>No of Tasks: </label>
-                                    <span>5</span>
+                                    <span>{project.tasks}</span>
                                 </span>
                                 <span className="col-sm-6">
                                     <label>Completed: </label>
-                                    <span>2</span>
+                                    <span>{project.completedTasks}</span>
                                 </span>
                             </div>
                             <div className="row">
@@ -70,9 +71,6 @@ export default class ViewProject extends React.Component {
                                 <button type="button" className="btn btn-outline-dark btn-block" onClick={this.updateProject}>Edit</button>
                             </div>
                             {this.renderSuspend()}
-                            {/* <div className="btn-user-row">
-                                <button type="button" className="btn btn-outline-dark btn-block" onClick={this.suspendProject}>Delete</button>
-                            </div> */}
                         </div>
                     </div>
                 </div>
