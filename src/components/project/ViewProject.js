@@ -30,7 +30,6 @@ export default class ViewProject extends React.Component {
     }
     render() {
         const project = this.props.project
-        console.log("project prop: ",project)
         return (
             <div className="viewUser">
                 <div className="container">

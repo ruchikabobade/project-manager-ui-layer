@@ -97,7 +97,7 @@ export default class AddUser extends React.Component {
       project: project
     };
     if (this.state.statusButton) {
-      console.log("update");
+      
       axios
         .put(
           "http://localhost:8080/projectmanager/service/user/updateUser",
@@ -118,7 +118,6 @@ export default class AddUser extends React.Component {
           this.setState(preState => {
             return { ...preState, users: preState.users.concat(res.data) };
           });
-          console.log("on Submit user : ", res.data);
         });
     }
     axios
@@ -130,7 +129,6 @@ export default class AddUser extends React.Component {
   }
 
   delete = u => {
-    console.log(u);
     axios
       .delete(
         "http://localhost:8080/projectmanager/service/user/deleteUser/" +
@@ -144,7 +142,6 @@ export default class AddUser extends React.Component {
   };
 
   update = u => {
-    console.log(u);
     this.setState({ firstName: u.firstName });
     this.setState({ lastName: u.lastName });
     this.setState({ employeeId: u.employeeId });
