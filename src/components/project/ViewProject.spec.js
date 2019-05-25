@@ -8,7 +8,7 @@ describe('ViewProject' , () => {
     beforeEach(() => wrapper = shallow(<ViewProject project={''}/>))
 
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(13);
+        expect(wrapper.find('div').length).toEqual(14);
     });
 
     it('should render a <button/>', () => {

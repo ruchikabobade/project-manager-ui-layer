@@ -9,7 +9,7 @@ describe('AddProject' , () => {
     beforeEach(() => wrapper = shallow(<AddProject/>))
 
     it('should render a <div/>', () => {
-        expect(wrapper.find('div').length).toEqual(37);
+        expect(wrapper.find('div').length).toEqual(44);
     });
 
     it('should render a <form/>', () => {
@@ -17,7 +17,7 @@ describe('AddProject' , () => {
     });
 
     it('should render a <input/>', () => {
-        expect(wrapper.find('input').length).toEqual(8);
+        expect(wrapper.find('input').length).toEqual(9);
     });
 
     it('should call submitProject', () => {
@@ -26,12 +26,12 @@ describe('AddProject' , () => {
         };
         const wrapper = mount(<AddProject />);
         const instance = wrapper.instance();
-        jest.spyOn(instance, 'onSubmit');
+        jest.spyOn(instance, 'submitHandler');
         wrapper.instance().forceUpdate()
         wrapper.update()
         const input = wrapper.find('#formSubmit')
         input.simulate('submit', event)
-        expect(instance.onSubmit).toHaveBeenCalled();
+        expect(instance.submitHandler).toHaveBeenCalled();
       });
 
       it('should call onReset', () => {
@@ -102,34 +102,20 @@ describe('AddProject' , () => {
         input.simulate('change', event)
         expect(instance.onChangePriority).toHaveBeenCalled();
       });
-    
-      it('should call onChangeManager', () => {
-        const event = {
-          target: { value: 'the-value' }
-        };
-        const wrapper = mount(<AddProject />);
-        const instance = wrapper.instance();
-        jest.spyOn(instance, 'onChangeManager');
-        wrapper.instance().forceUpdate()
-        wrapper.update()
-        const input = wrapper.find('#manager')
-        input.simulate('change', event)
-        expect(instance.onChangeManager).toHaveBeenCalled();
-      });
 
-      it('should call filterList', () => {
-        const event = {
-          target: { value: 'the-value' }
-        };
-        const wrapper = mount(<AddProject />);
-        const instance = wrapper.instance();
-        jest.spyOn(instance, 'filterList');
-        wrapper.instance().forceUpdate()
-        wrapper.update()
-        const input = wrapper.find('input').last()
-        input.simulate('change', event)
-        expect(instance.filterList).toHaveBeenCalled();
-      });
+      // it('should call filterList', () => {
+      //   const event = {
+      //     target: { value: 'the-value' }
+      //   };
+      //   const wrapper = mount(<AddProject />);
+      //   const instance = wrapper.instance();
+      //   jest.spyOn(instance, 'filterList');
+      //   wrapper.instance().forceUpdate()
+      //   wrapper.update()
+      //   const input = wrapper.find('input').last()
+      //   input.simulate('change', event)
+      //   expect(instance.filterList).toHaveBeenCalled();
+      // });
 
       it('should click sortBy startDate', () => {
         const key = "startDate";
@@ -161,7 +147,7 @@ describe('AddProject' , () => {
       })
 
       it('should click sortBy Completed', () => {
-        const key = "completed";
+        const key = "status";
         const wrapper = shallow(<AddProject key />)
         const instance = wrapper.instance();
         jest.spyOn(instance, 'compareBy');

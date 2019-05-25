@@ -10,10 +10,8 @@ describe('AddUser', () => {
   let wrapper;
   beforeEach(() => wrapper = shallow(<AddUser />))
 
-  // it('should render correctly', () => expect(wrapper).toMatchSnapshot());
-
   it('should render a <div/>', () => {
-    expect(wrapper.find('div').length).toEqual(24);
+    expect(wrapper.find('div').length).toEqual(27);
   });
 
   it('should render a <form/>', () => {
@@ -66,7 +64,7 @@ describe('AddUser', () => {
     const event = {
       target: { value: 'the-value' }
     };
-    const wrapper = mount(<AddUser />);
+    const wrapper = shallow(<AddUser />);
     const instance = wrapper.instance();
     jest.spyOn(instance, 'onChangeFirstName');
     wrapper.instance().forceUpdate()
@@ -137,12 +135,12 @@ describe('AddUser', () => {
     };
     const wrapper = mount(<AddUser />);
     const instance = wrapper.instance();
-    jest.spyOn(instance, 'onSubmit');
+    jest.spyOn(instance, 'submitHandler');
     wrapper.instance().forceUpdate()
     wrapper.update()
     const input = wrapper.find('#formSubmit')
     input.simulate('submit', event)
-    expect(instance.onSubmit).toHaveBeenCalled();
+    expect(instance.submitHandler).toHaveBeenCalled();
   });
 
   it('should check that the componentWillMount method is getting called', () => {
@@ -152,25 +150,4 @@ describe('AddUser', () => {
     expect(AddUser.prototype.componentWillMount).toHaveBeenCalledTimes(1);
 });
 
-jest.mock('axios');
-
-// it('fetch articles on #componentDidMount', () => {
-//   const app = shallow(<AddUser />);
-//   app.instance().componentWillMount().then(() => {
-//       expect(axios.get).toHaveBeenCalled();
-//       expect(axios.get).toHaveBeenCalledWith('articles_url');
-//       expect(app.state()).toHaveProperty('users', [
-//         { firstName: '', lastName: '', employeeId: '', userId: '' }
-//       ]);
-//       done();
-//     });
-// });
-
-it('should fetch a list of tasks', () => {
-  const getSpy = jest.spyOn(axios, 'get');
-  const toDoListInstance = shallow(
-    <AddUser/>
-  );
-  expect(getSpy).toBeCalled();
-});
 })
