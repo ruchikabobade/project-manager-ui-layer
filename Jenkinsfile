@@ -1,12 +1,16 @@
 node {
-    try {
-        def app
-        stage('Clone repository') {
-            checkout scm
-        }
-        stage('Build') {
-            sh 'bash ./build.sh'
-        }
+  try {
+      def app
+    stage('Checkout') {
+      checkout scm
+    }
+    stage('Environment') {
+      sh 'git --version'
+      echo "Branch: ${env.BRANCH_NAME}"
+      sh 'docker -v'
+      sh 'printenv'
+   
+    }
         stage('Build Docker image') {
             app = docker.build("ruchikadocker/project-manager-app", "-f ./Dockerfile .")
         }
