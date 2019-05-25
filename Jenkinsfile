@@ -1,23 +1,24 @@
-pipeline {
-    agent {
-        docker {
-            image 'node:6-alpine'
-            args '-p 3000:3000'
+node {
+    try {
+        def app
+        stage('Clone repository') {
+            checkout scm
         }
-    }
-    environment {
-        CI = 'true' 
-    }
-    stages {
         stage('Build') {
-            steps {
-                sh 'npm install'
+            sh 'bash ./build.sh'
+        }
+        stage('Build Docker image') {
+            app = docker.build("ruchikadocker/project-manager-app", "-f ./Dockerfile .")
+        }
+        stage('Push image') {
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                app.push("${env.BUILD_NUMBER}")
+                app.push("latest")
             }
         }
-        stage('Test') { 
-            steps {
-                sh './jenkins/scripts/test.sh' 
-            }
+    } finally {
+        stage('cleanup') {
+            echo "doing some cleanup..."
         }
     }
 }

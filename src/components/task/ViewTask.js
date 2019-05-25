@@ -2,6 +2,7 @@ import React from 'react'
 import ViewTaskList from './ViewTaskList';
 import axios from 'axios'
 import DataTable from 'react-data-table-component'
+import * as Constants from '../../constants';
 
 const projectColumns = [
     {
@@ -37,8 +38,7 @@ export default class ViewTask extends React.Component {
     }
 
     componentWillMount() {
-        axios.get('http://localhost:8080/projectmanager/service/task/viewTask')
-            .then(response => {
+        axios.get(Constants.viewTaskURL).then(response => {
                 this.setState({ initialtasks: response.data });
                 this.setState({ tasks: response.data });
             })
@@ -56,43 +56,28 @@ export default class ViewTask extends React.Component {
         }
     }
     endTask = (t) => {
-        axios.delete('http://localhost:8080/projectmanager/service/task/endTask/' + t.taskId)
-            .then(res => {
+        axios.delete(Constants.endTaskURL + t.taskId).then(res => {
                 this.setState((preState)=>{
                   return { ...preState, tasks: preState.tasks.map( data => data.taskId === res.data.taskId  ? res.data : data )}
                 })
               });
     }
 
-    filterList(e) {
-        var updatedList = this.state.initialtasks;
-        updatedList = updatedList.filter(function (task) {
-            return task.project.project.toLowerCase().search(
-                e.target.value.toLowerCase()) !== -1;
-        });
-
-        if (updatedList.length > 0) {
-            this.setState({ tasks: updatedList });
-        }
-    }
-
     handleChangeProject = (state) => {
+        if(state.selectedRows && state.selectedRows[0]){    
         project.projectId = state.selectedRows[0].projectId
         project.project = state.selectedRows[0].project
         project.priority = state.selectedRows[0].priority
         project.startDate = state.selectedRows[0].startDate
         project.endDate = state.selectedRows[0].endDate
         this.setState({ project: project.project  });
-        axios.get('http://localhost:8080/projectmanager/service/task/viewTaskByProjectId/' + project.projectId)
-            .then(response => {
+        axios.get(Constants.viewTaskByProjectIdURL + project.projectId).then(response => {
                 this.setState({ tasks: response.data });
             });
+        }
     }
     onSearch = () => {
-        axios
-          .get(
-            "http://localhost:8080/projectmanager/service/user/viewUser"
-          ).then(response => {
+        axios.get(Constants.viewUserURL).then(response => {
             this.setState({ users: response.data });
             this.setState({ initialUsers: response.data });
           });
@@ -116,15 +101,13 @@ export default class ViewTask extends React.Component {
     };
 
     onSearch = () => {
-        axios.get('http://localhost:8080/projectmanager/service/project/viewProject')
-            .then(response => {
+        axios.get(Constants.viewProjectURL).then(response => {
                 this.setState({ projects: response.data });
                 this.setState({ initialProjects: response.data });
             })
     }
     render() {
         const rows = []
-
         this.state.tasks.forEach((task) => {
             rows.push(
                 <ViewTaskList task={task}

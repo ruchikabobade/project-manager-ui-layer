@@ -3,6 +3,7 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 import ViewProject from "./ViewProject";
 import Moment from "moment";
+import * as Constants from "../../constants";
 
 const columns = [
   {
@@ -37,6 +38,7 @@ export default class AddProject extends React.Component {
     this.onChangeStartDate = this.onChangeStartDate.bind(this);
     this.onChangePriority = this.onChangePriority.bind(this);
     this.onChangeEndDate = this.onChangeEndDate.bind(this);
+    this.filterList = this.filterList.bind(this);
 
         this.state = {
             project: "",
@@ -59,31 +61,20 @@ export default class AddProject extends React.Component {
       if (this.state.statusButton) {
         return (
           <span className="button-space">
-            <input
-              type="submit"
-              id="formSubmit"
-              value="Update"
-              className="btn btn-outline-dark custom"
-            />
+            <input type="submit" id="formSubmit" value="Update"  className="btn btn-outline-dark custom" />
           </span>
         );
       } else {
         return (
           <span className="button-space">
-            <input
-              type="submit"
-              id="formSubmit"
-              value="Add"
-              className="btn btn-outline-dark custom"
-            />
+            <input type="submit"  id="formSubmit"  value="Add"  className="btn btn-outline-dark custom"  />
           </span>
         );
       }
     };
+
   componentWillMount() {
-    axios
-      .get("http://localhost:8080/projectmanager/service/project/viewProject")
-      .then(response => {
+    axios.get(Constants.viewProjectURL).then(response => {
         this.setState({ initialprojects: response.data });
         this.setState({ projects: response.data });
       });
@@ -169,10 +160,7 @@ export default class AddProject extends React.Component {
     }
 
   onSearch = () => {
-    axios
-      .get(
-        "http://localhost:8080/projectmanager/service/user/viewUser"
-      ).then(response => {
+    axios.get(Constants.viewUserURL).then(response => {
         this.setState({ users: response.data });
         this.setState({ initialUsers: response.data });
       });
@@ -211,13 +199,11 @@ export default class AddProject extends React.Component {
             project: projectRecord
         }
         if (this.state.statusButton){
-            axios.put('http://localhost:8080/projectmanager/service/project/updateProject', updatedRecord
-        ).then(res => {
-          this.setState((preState)=>{
+            axios.put(Constants.updateProjectURL, record).then(res => {this.setState((preState)=>{
             return { ...preState, projects: preState.projects.map( data => data.projectId === res.data.projectId  ? res.data : data )}
           })
         });} else {
-        axios.post("http://localhost:8080/projectmanager/service/project/addProject",record).then(res => {
+        axios.post(Constants.addProjectURL, record).then(res => {
         this.setState(preState => {
           const project = res.data && res.data.project;
           return { ...preState, projects: preState.projects.concat(project) };
@@ -242,11 +228,7 @@ export default class AddProject extends React.Component {
   };
 
   suspend = p => {
-    axios
-      .delete(
-        "http://localhost:8080/projectmanager/service/project/suspendProject/" +
-          p.projectId
-      ).then(res => {
+    axios.delete(Constants.suspendProjectURL +p.projectId).then(res => {
         this.setState((preState)=>{
           return { ...preState, projects: preState.projects.map( data => data.projectId === res.data.projectId  ? res.data : data )}
         })

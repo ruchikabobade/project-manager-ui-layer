@@ -2,8 +2,9 @@ import React from 'react'
 import axios from 'axios'
 import DataTable from 'react-data-table-component'
 import { withRouter } from 'react-router-dom';
-
+import * as Constants from '../../constants';
 import Moment from "moment";
+
 const projectColumns = [
     {
         name: 'Project',
@@ -105,7 +106,7 @@ const parentTask = {
         const {id} = this.props.match.params
         if(id){
             this.setState({ isUpdate :true}) 
-            axios.get('http://localhost:8080/projectmanager/service/task/viewTaskById/'+ id)
+            axios.get(Constants.viewTaskByIdURL + id)
             .then(response => {
                 this.setState({ task: response.data.task });
                 this.setState({ taskId: id });
@@ -149,7 +150,7 @@ const parentTask = {
 filterTasksList(e) {
     var updatedList = this.state.initialpTasks;
     updatedList = updatedList.filter(function (task) {
-        return task.task.toLowerCase().search(
+        return task.parentTask.toLowerCase().search(
             e.target.value.toLowerCase()) !== -1;
     });
 
@@ -217,32 +218,29 @@ filterTasksList(e) {
             taskId: this.state.taskId
         }
         if(this.state.isUpdate){
-            axios.put('http://localhost:8080/projectmanager/service/task/updateTask', taskRecord)
+            axios.put(Constants.updateTaskURL, taskRecord)
             .then(res => {});
         } else{
-        axios.post('http://localhost:8080/projectmanager/service/task/addtask', taskRecord)
-        .then(res => {});
+        axios.post(Constants.addTaskURL, taskRecord).then(res => {});
         }
+        this.onReset();
     }
 
     onSearch = (key) => {
         this.setState({ key: key });
         if(key === 'project'){   
-            axios.get('http://localhost:8080/projectmanager/service/project/viewProject')
-        .then(response => {
+            axios.get(Constants.viewProjectURL).then(response => {
             this.setState({ initialProjects: response.data });
             this.setState({ projects: response.data });
             })}
             if(key === 'user'){
-        axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
-            .then(response => {
+        axios.get(Constants.viewUserURL).then(response => {
                 this.setState({ initialUsers: response.data });
                 this.setState({ users: response.data });
             })
         }
         if(key === 'parent'){
-            axios.get('http://localhost:8080/projectmanager/service/task/viewParentTask')
-                .then(response => {
+            axios.get(Constants.viewParentTaskURL).then(response => {
                     this.setState({ ptasks: response.data });
                     this.setState({ initialpTasks: response.data });
                 })
@@ -310,8 +308,7 @@ filterTasksList(e) {
         const { startDate, endDate } = this.state;
         const minEndDate = Moment(startDate).add(1, 'day').format('YYYY-MM-DD');
         return(
-            <div className="row">
-              
+            <div className="row">   
             <div className="page-view col-sm-10">
             <div>
                 <form className="form-horizontal main-form needs-validation" onSubmit = {this.submitHandler} noValidate >

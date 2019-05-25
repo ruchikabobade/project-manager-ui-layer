@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import ViewUser from "./ViewUser";
+import * as Constants from "../../constants";
 
 export default class AddUser extends React.Component {
   constructor(props) {
@@ -21,28 +22,26 @@ export default class AddUser extends React.Component {
   }
 
   componentWillMount() {
-    axios
-      .get("http://localhost:8080/projectmanager/service/user/viewUser")
-      .then(response => {
-        this.setState({ initialUsers: response.data });
-        this.setState({ users: response.data });
-      });
+    axios.get(Constants.viewUserURL).then(response => {
+      this.setState({ initialUsers: response.data });
+      this.setState({ users: response.data });
+    });
   }
 
   filterList(e) {
     var updatedList = this.state.initialUsers;
-    updatedList = updatedList.filter(function(user) {
+    updatedList = updatedList.filter(function (user) {
       return (
         user.firstName.toLowerCase().search(e.target.value.toLowerCase()) !== -1
       );
     });
-
     if (updatedList.length > 0) {
       this.setState({ users: updatedList });
     }
   }
+
   compareBy = key => {
-    return function(a, b) {
+    return function (a, b) {
       if (a[key] < b[key]) return -1;
       if (a[key] > b[key]) return 1;
       return 0;
@@ -79,7 +78,7 @@ export default class AddUser extends React.Component {
     });
   }
 
-  onSubmit=(e)=> {
+  onSubmit = (e) => {
     e.preventDefault();
     const userRecord = {
       firstName: this.state.firstName,
@@ -97,42 +96,26 @@ export default class AddUser extends React.Component {
       project: project
     };
     if (this.state.statusButton) {
-      
-      axios
-        .put(
-          "http://localhost:8080/projectmanager/service/user/updateUser",
-          record
-        )
-        .then(res => {
-          this.setState((preState)=>{
-            return { ...preState, users: preState.users.map( data => data.userId === res.data.userId  ? res.data : data )}
-          })
-        });
+      axios.put(Constants.updateUserURL, record).then(res => {
+        this.setState((preState) => {
+          return { ...preState, users: preState.users.map(data => data.userId === res.data.userId ? res.data : data) }
+        })
+      });
     } else {
-      axios
-        .post(
-          "http://localhost:8080/projectmanager/service/user/addUser",
-          userRecord
-        )
-        .then(res => {
-          this.setState(preState => {
-            return { ...preState, users: preState.users.concat(res.data) };
-          });
+      axios.post(Constants.addUserURL, userRecord).then(res => {
+        this.setState(preState => {
+          return { ...preState, users: preState.users.concat(res.data) };
         });
+      });
     }
     this.onReset()
   }
 
   delete = u => {
-    axios
-      .delete(
-        "http://localhost:8080/projectmanager/service/user/deleteUser/" +
-          u.userId
-      )
-      .then(response => {
-    this.setState((preState)=>{
-      return { ...preState, users: preState.users.filter(data=>data.userId!==u.userId)}
-    })
+    axios.delete(Constants.deleteUserURL + u.userId).then(response => {
+      this.setState((preState) => {
+        return { ...preState, users: preState.users.filter(data => data.userId !== u.userId) }
+      })
     });
   };
 
@@ -149,27 +132,18 @@ export default class AddUser extends React.Component {
     if (this.state.statusButton) {
       return (
         <span className="button-space">
-          <input
-            type="submit"
-            id="formSubmit"
-            value="Update"
-            className="btn btn-outline-dark custom"
-          />
+          <input type="submit" id="formSubmit" value="Update" className="btn btn-outline-dark custom" />
         </span>
       );
     } else {
       return (
         <span className="button-space">
-          <input
-            type="submit"
-            id="formSubmit"
-            value="Add"
-            className="btn btn-outline-dark custom"
-          />
+          <input type="submit" id="formSubmit" value="Add" className="btn btn-outline-dark custom" />
         </span>
       );
     }
   };
+
   submitHandler = (event, action) => {
     const form = event.currentTarget;
     event.preventDefault();
@@ -185,13 +159,7 @@ export default class AddUser extends React.Component {
     const rows = [];
     this.state.users.forEach(user => {
       rows.push(
-        <ViewUser
-          user={user}
-          key={user.employeeId+user.userId}
-          onSelectDeleteUser={this.delete}
-          onSelectEditUser={this.update}
-        />
-      );
+        <ViewUser user={user} key={user.employeeId + user.userId} onSelectDeleteUser={this.delete} onSelectEditUser={this.update} />);
     });
 
     return (
@@ -204,51 +172,25 @@ export default class AddUser extends React.Component {
                   <div className="row">
                     <label className="col-sm-3 col-form-label"> First Name:{" "}</label>
                     <div className="col-sm-9">
-                      <input required type="text"
-                        id="firstName"
-                        className="form-control"
-                        title="please fill this field"
-                        value={this.state.firstName}
-                        onChange={this.onChangeFirstName.bind(this)}
-                      />
+                      <input required type="text" id="firstName" className="form-control" title="please fill this field" value={this.state.firstName} onChange={this.onChangeFirstName.bind(this)} />
                       <div className="invalid-feedback"> *please enter First Name</div>
                     </div>
                   </div>
                 </div>
                 <div className="form-group form-group-sm col-sm-12">
                   <div className="row">
-                    <label className="col-sm-3 col-form-label">
-                      Last Name:{" "}
-                    </label>
+                    <label className="col-sm-3 col-form-label"> Last Name:{" "} </label>
                     <div className="col-sm-9">
-                      <input
-                        required
-                        type="text"
-                        id="lastName"
-                        className="form-control"
-                        value={this.state.lastName}
-                        title="write msg"
-                        onChange={this.onChangeLastName.bind(this)}
-                      />
+                      <input required type="text" id="lastName" className="form-control" value={this.state.lastName} title="write msg" onChange={this.onChangeLastName.bind(this)} />
                       <div className="invalid-feedback">*please enter Last Name</div>
                     </div>
                   </div>
                 </div>
                 <div className="form-group form-group-sm col-sm-12">
                   <div className="row">
-                    <label className="col-sm-3 col-form-label">
-                      Employee ID:{" "}
-                    </label>
+                    <label className="col-sm-3 col-form-label"> Employee ID:{" "} </label>
                     <div className="col-sm-4">
-                      <input
-                        required
-                        type="text"
-                        id="employeeId"
-                        className="form-control"
-                        title="write msg"
-                        value={this.state.employeeId}
-                        onChange={this.onChangeEmployeeId.bind(this)}
-                      />
+                      <input required type="text" id="employeeId" className="form-control" title="write msg" value={this.state.employeeId} onChange={this.onChangeEmployeeId.bind(this)} />
                       <div className="invalid-feedback">*please enter employee Id</div>
                     </div>
                   </div>
@@ -259,13 +201,7 @@ export default class AddUser extends React.Component {
                     <div className="col-sm-4">
                       {this.renderCancel()}
                       <span className="button-space">
-                        <button
-                          type="button"
-                          className="btn btn-outline-dark custom"
-                          onClick={this.onReset.bind(this)}
-                        >
-                          Reset
-                        </button>
+                        <button type="button" className="btn btn-outline-dark custom" onClick={this.onReset.bind(this)}> Reset  </button>
                       </span>
                     </div>
                   </div>
@@ -280,45 +216,19 @@ export default class AddUser extends React.Component {
               <div className="row">
                 <div className="col-sm-4">
                   <span>
-                    <input
-                      className="form-control"
-                      type="text"
-                      id="searchFilter"
-                      placeholder="Search..."
-                      onChange={this.filterList.bind(this)}
-                    />
+                    <input className="form-control" type="text" id="searchFilter" placeholder="Search..." onChange={this.filterList.bind(this)} />
                   </span>
                 </div>
                 <div className="col-sm-8">
                   <span className="sort">Sort: </span>
                   <span className="button-space-sort">
-                    <button
-                      type="button"
-                      id="byFirstName"
-                      className="btn btn-outline-dark custom-sort"
-                      onClick={() => this.sortList("firstName")}
-                    >
-                      First Name
-                    </button>
+                    <button type="button" id="byFirstName" className="btn btn-outline-dark custom-sort" onClick={() => this.sortList("firstName")} >   First Name  </button>
                   </span>
                   <span className="button-space-sort">
-                    <button
-                      type="button"
-                      id="byLastName"
-                      className="btn btn-outline-dark custom-sort"
-                      onClick={() => this.sortList("lastName")}
-                    >
-                      Last Name
-                    </button>
+                    <button type="button" id="byLastName" className="btn btn-outline-dark custom-sort" onClick={() => this.sortList("lastName")} >   Last Name </button>
                   </span>
                   <span className="button-space-sort">
-                    <button
-                      type="button"
-                      className="btn btn-outline-dark custom-sort"
-                      onClick={() => this.sortList("employeeId")}
-                    >
-                      Id
-                    </button>
+                    <button type="button" className="btn btn-outline-dark custom-sort" onClick={() => this.sortList("employeeId")} >  Id  </button>
                   </span>
                 </div>
               </div>
