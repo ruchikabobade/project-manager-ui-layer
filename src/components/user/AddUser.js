@@ -111,7 +111,7 @@ export default class AddUser extends React.Component {
     } else {
       axios
         .post(
-          "http://loalhost:8080/projectmanager/service/user/addUser",
+          "http://localhost:8080/projectmanager/service/user/addUser",
           userRecord
         )
         .then(res => {
@@ -120,12 +120,7 @@ export default class AddUser extends React.Component {
           });
         });
     }
-    axios
-      .get("http://localhost:8080/projectmanager/service/user/viewUser")
-      .then(response => {
-        this.setState({ initialUsers: response.data });
-        //this.setState({ users: response.data });
-      });
+    this.onReset()
   }
 
   delete = u => {
@@ -179,12 +174,11 @@ export default class AddUser extends React.Component {
     const form = event.currentTarget;
     event.preventDefault();
     if (form && form.checkValidity() === false) {
-
       event.stopPropagation();
       event.target.className += " was-validated";
-    } else if (event.type == "submit") {
+    } else if (event.type === "submit") {
       this.onSubmit(event);
-    }//this.onSubmit.bind(this)
+    }
   }
 
   render() {
@@ -193,7 +187,7 @@ export default class AddUser extends React.Component {
       rows.push(
         <ViewUser
           user={user}
-          key={user.employeeId}
+          key={user.employeeId+user.userId}
           onSelectDeleteUser={this.delete}
           onSelectEditUser={this.update}
         />
@@ -203,23 +197,14 @@ export default class AddUser extends React.Component {
     return (
       <div>
         <div className="form-component">
-          {/* <form className="form-horizontal" onSubmit={this.onSubmit.bind(this)}> */}
-          <form
-            className="form-horizontal main-form needs-validation"
-            onSubmit={this.submitHandler}
-            noValidate
-          >
+          <form className="form-horizontal main-form needs-validation" onSubmit={this.submitHandler} noValidate>
             <div className="container">
               <div className="row">
                 <div className="form-group form-group-sm col-sm-12">
                   <div className="row">
-                    <label className="col-sm-3 col-form-label">
-                      First Name:{" "}
-                    </label>
+                    <label className="col-sm-3 col-form-label"> First Name:{" "}</label>
                     <div className="col-sm-9">
-                      <input
-                        required
-                        type="text"
+                      <input required type="text"
                         id="firstName"
                         className="form-control"
                         title="please fill this field"

@@ -1,10 +1,15 @@
 import React from 'react'
 import Moment from 'moment'
 import { withRouter } from 'react-router-dom';
-import {HashRouter, NavLink, Route} from 'react-router-dom'
-import AddTask from './AddTask'
 
  class ViewTaskList extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+          description : ""
+        }
+    }
     endTask = () => {
         var t = this.props.task
         this.props.onSelectEndTask(t)
@@ -12,7 +17,6 @@ import AddTask from './AddTask'
 
     updateTask = () => {
         const t = this.props.task
-        //let path = `updateTask?id=${t.taskId}`;
         let path = '/updateTask/' + t.taskId;
         this.props.history.push({
             pathname : path
@@ -22,17 +26,16 @@ import AddTask from './AddTask'
 
     renderComplete= () =>{
         const t = this.props.task
-        console.log(t);
-        if (t.status === "completed") {
+        if (t.status === true) {
             return (
                  <div className="col-sm-2">
-                <button type="button" className="btn btn-outline-dark btn-block">Completed</button>
+                <button type="button" className="btn btn-outline-dark ">Completed</button>
             </div>
             );
         } else {
             return (
                 <div className="col-sm-2">
-                <button type="button" className="btn btn-outline-dark btn-block" onClick={this.endTask}>End Task</button>
+                <button type="button" className="btn btn-outline-dark" onClick={this.endTask}>EndTask</button>
             </div>
             )
         }
@@ -40,9 +43,8 @@ import AddTask from './AddTask'
     render() {
         const task = this.props.task
         return (
-            <div>
-        
-                <div className="container">
+            <div className="">
+                <div className="container viewTask">
                     <div className="row">
                         <div className="col-sm-4">
                             <div className="row">
@@ -52,7 +54,7 @@ import AddTask from './AddTask'
                                 </div>
                                 <div className="col-sm-6">
                                     <div>Parent</div>
-                                    <div className="greyBox">{task.parentId}</div>
+                                    <div className="greyBox">{task.parentTask ?  task.parentTask.parentTask : "No Parent Task"}</div>
                                 </div>
                             </div>
                         </div>
@@ -71,7 +73,7 @@ import AddTask from './AddTask'
                                     <div className="greyBox">{Moment(task.endDate).format("YYYY-MM-DD")}</div>
                                 </div>
                                 <div className="col-sm-2">
-                                    <button type="button" className="btn btn-outline-dark btn-block" onClick={this.updateTask}>Edit</button>
+                                    <button type="button" className="btn btn-outline-dark btn-block" disabled={task.status} onClick={this.updateTask}>Edit</button>
                                 </div>
                                {this.renderComplete()}
                             </div>

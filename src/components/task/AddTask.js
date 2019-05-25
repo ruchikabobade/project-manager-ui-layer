@@ -2,7 +2,6 @@ import React from 'react'
 import axios from 'axios'
 import DataTable from 'react-data-table-component'
 import { withRouter } from 'react-router-dom';
-import {HashRouter, NavLink, Route} from 'react-router-dom'
 
 import Moment from "moment";
 const projectColumns = [
@@ -66,11 +65,8 @@ const parentTask = {
  class AddTask extends React.Component{
     constructor(props) {
         super(props);
-        this.onChangeProject = this.onChangeProject.bind(this)
         this.onChangeTask = this.onChangeTask.bind(this)
-        this.onChangeParentTask = this.onChangeParentTask.bind(this)
         this.onChangeIsParent = this.onChangeIsParent.bind(this)
-        this.onChangeUser = this.onChangeUser.bind(this)
         this.onChangeStartDate = this.onChangeStartDate.bind(this)
         this.onChangePriority = this.onChangePriority.bind(this)
         this.onChangeEndDate = this.onChangeEndDate.bind(this)
@@ -80,65 +76,102 @@ const parentTask = {
             isParent: false,
             startDate: Moment(new Date()).format("YYYY-MM-DD"),
             endDate: Moment(new Date()).add(1,'day').format("YYYY-MM-DD"),
-            priority: 10,
+            priority: 0,
             manager: "",
-            users: [],
-            initialProjects: [],
-            projects: [],
             parentTask : "",
             task : "",
             user :"",
             data:[],
             key : "",
             isUpdate: false, 
-            taskId : 0
+            taskId : 0,
+            projectSelected: false,
+            userSelected: false,
+            parentTaskSelected : false,
+            users: [],
+            initialUsers:[],
+            projects:[],
+            initialprojects:[],
+            ptasks:[],
+            initialpTasks:[],
+            disableFields:false,
+            parentTaskObj:"",
+            projectObj:"",
+            userObj:""
         }
     }
 
     componentDidMount(){
         const {id} = this.props.match.params
-        console.log(id)
         if(id){
             this.setState({ isUpdate :true}) 
             axios.get('http://localhost:8080/projectmanager/service/task/viewTaskById/'+ id)
             .then(response => {
                 this.setState({ task: response.data.task });
-                this.setState({ priority: response.data.priority });
+                this.setState({ taskId: id });
                 this.setState({ isParent : response.data.isParent})
-                this.setState({ taskId : response.data.taskId})
-            })
-        }else{
-            this.setState({ isUpdate :false})
-        }
-        // axios.get('http://localhost:8080/projectmanager/service/task/viewTaskById/'+ id)
-        // .then(response => {
-        //     this.setState({ task: response.data.task });
-        //     this.setState({ priority: response.data.priority });
-        //     this.setState({ isParent : response.data.isParent})
-        // })
-
-        console.log(this.state.task)
+                if(!this.state.isParent){
+                    this.setState({ parentTaskObj : response.data.parentTask})
+                    this.setState({ projectObj : response.data.project})
+                    this.setState({ userObj : response.data.user})
+                    this.setState({ startDate : response.data.startDate})
+                    this.setState({ disableFields : true})
+                    this.setState({ endDate : response.data.endDate})
+                    this.setState({ priority: response.data.priority });
+                  } 
+            })}else{
+            this.setState({ isUpdate :false}) }
     }
 
-    onChangeProject(e) {
-        this.setState({
-            project: e.target.value
+    filterList(e) {
+        var updatedList = this.state.initialProjects;
+        updatedList = updatedList.filter(function (project) {
+            return project.project.toLowerCase().search(
+                e.target.value.toLowerCase()) !== -1;
         });
+
+    if (updatedList.length > 0) {
+      this.setState({ projects: updatedList });
     }
+  }
+
+  filterUserList(e) {
+    var updatedList = this.state.initialUsers;
+    updatedList = updatedList.filter(function (user) {
+        return user.firstName.toLowerCase().search(
+            e.target.value.toLowerCase()) !== -1;
+    });
+
+   if (updatedList.length > 0) {
+     this.setState({ users: updatedList });
+   }
+}
+filterTasksList(e) {
+    var updatedList = this.state.initialpTasks;
+    updatedList = updatedList.filter(function (task) {
+        return task.task.toLowerCase().search(
+            e.target.value.toLowerCase()) !== -1;
+    });
+
+   if (updatedList.length > 0) {
+     this.setState({ ptasks: updatedList });
+   }
+}
  
     onChangeIsParent = () => {
         if (this.state.isParent === true) {
             this.setState({  isParent: false })
-        }
-        else {
+         } else {
             this.setState({  isParent: true })
         }
     }
+    
     onChangeStartDate(e) {
         this.setState({
             startDate: e.target.value
         });
     }
+   
     onChangeEndDate(e) {
         this.setState({
             endDate: e.target.value
@@ -149,16 +182,7 @@ const parentTask = {
             priority: e.target.value
         });
     }
-    onChangeUser(e) {
-        this.setState({
-            user: e.target.value
-        });
-    }
-    onChangeParentTask(e) {
-        this.setState({
-            parentTask: e.target.value
-        });
-    }
+    
     onChangeTask(e) {
         this.setState({
             task: e.target.value
@@ -172,7 +196,7 @@ const parentTask = {
             isParent : false,
             startDate : '',
             endDate : '',
-            priority : '',
+            priority : 0,
             user : '',
             parentTask :'',
             task: ''
@@ -192,73 +216,96 @@ const parentTask = {
             parentTask: parentTask,
             taskId: this.state.taskId
         }
-        console.log("new" +taskRecord)
         if(this.state.isUpdate){
             axios.put('http://localhost:8080/projectmanager/service/task/updateTask', taskRecord)
-            .then(res => console.log(res.data));
-        }
-        else{
+            .then(res => {});
+        } else{
         axios.post('http://localhost:8080/projectmanager/service/task/addtask', taskRecord)
-        .then(res => console.log(res.data));
+        .then(res => {});
         }
     }
 
     onSearch = (key) => {
         this.setState({ key: key });
         if(key === 'project'){   
-            axios.get('http://localhost:8080/projectmanager/service/project/viewProjectByProject/'+ this.state.project)
+            axios.get('http://localhost:8080/projectmanager/service/project/viewProject')
         .then(response => {
-            this.setState({ data: response.data });
+            this.setState({ initialProjects: response.data });
+            this.setState({ projects: response.data });
             })}
             if(key === 'user'){
-        axios.get('http://localhost:8080/projectmanager/service/user/viewUserByFirstName/'+this.state.user)
+        axios.get('http://localhost:8080/projectmanager/service/user/viewUser')
             .then(response => {
-                this.setState({ data: response.data });
+                this.setState({ initialUsers: response.data });
+                this.setState({ users: response.data });
             })
         }
         if(key === 'parent'){
-            axios.get('http://localhost:8080/projectmanager/service/task/viewTaskByParent/'+this.state.parentTask)
+            axios.get('http://localhost:8080/projectmanager/service/task/viewParentTask')
                 .then(response => {
-                    this.setState({ data: response.data });
+                    this.setState({ ptasks: response.data });
+                    this.setState({ initialpTasks: response.data });
                 })
             }
     }
     handleChangeUser = (state) => {
+        if(state.selectedRows && state.selectedRows[0]){
         user.userId = state.selectedRows[0].userId
         user.firstName = state.selectedRows[0].firstName
         user.lastName = state.selectedRows[0].lastName
         user.employeeId = state.selectedRows[0].employeeId
-        console.log('Selected Rows: ', state.selectedRows);
-        console.log(user);
+        const userName = user.firstName + " " + user.lastName
+        this.setState({user: userName})
+        if(!this.state.isParent)
+        this.setState({ userSelected: !this.state.userSelected });
+        }
     }
 
     handleChangeProject = (state) => {
+        if(state.selectedRows && state.selectedRows[0]){
         project.projectId = state.selectedRows[0].projectId
         project.project = state.selectedRows[0].project
         project.priority = state.selectedRows[0].priority
         project.startDate = state.selectedRows[0].startDate
-        project.endDate = state.selectedRows[0].endDate
-        console.log('Selected Rows: ', state.selectedRows);
-        console.log(project);
+        project.endDate = state.selectedRows[0].endDate    
+        this.setState({project: project.project})
+        if(!this.state.isParent)
+        this.setState({ projectSelected: !this.state.projectSelected });
+        }
     }
 
     handleChangeParentTask = (state) => {
+        if(state.selectedRows && state.selectedRows[0]){
         parentTask.parentId = state.selectedRows[0].parentId
         parentTask.parentTask = state.selectedRows[0].parentTask
-        console.log('Selected Rows: ', state.selectedRows);
-        console.log(parentTask);
+        this.setState({parentTask: parentTask.parentTask})
+        if(!this.state.isParent)
+        this.setState({ parentTaskSelected: !this.state.parentTaskSelected });
+        }
     }
-    submitHandler = (event, action) => {
+      submitHandler = (event) => {
         const form = event.currentTarget;
         event.preventDefault();
-        if (form && form.checkValidity() === false) {
-    
+        if (!this.state.userSelected) {
+          this.setState({ user: "" });
+        }
+        if (!this.state.projectSelected) {
+            this.setState({ project: "" });
+        }
+        if (!this.state.parentTaskSelected) {
+            this.setState({ parentTask: "" });
+        }
+        if ((form && form.checkValidity() === false) ) {
           event.stopPropagation();
           event.target.className += " was-validated";
         } else if (event.type == "submit") {
           this.onSubmit(event);
-        }//this.onSubmit.bind(this)
-      }
+          this.setState({ userSelected: false });
+          this.setState({ projectSelected: false });
+          this.setState({ parentTaskSelected: false });
+        } 
+      };
+
     render(){
         const { startDate, endDate } = this.state;
         const minEndDate = Moment(startDate).add(1, 'day').format('YYYY-MM-DD');
@@ -268,86 +315,82 @@ const parentTask = {
             <div className="page-view col-sm-10">
             <div>
                 <form className="form-horizontal main-form needs-validation" onSubmit = {this.submitHandler} noValidate >
-                    <div class="container">
-                        <div class="row">
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <label class="col-sm-2 col-form-label"> Project: </label>
-                                    <div class="col-sm-8">
-                                        <input type="text" className="form-control" value={this.state.project} onChange={this.onChangeProject.bind(this)}/>
+                    <div className="container">
+                        <div className="row">
+                            <div className="form-group form-group-sm col-sm-12">
+                                <div className="row">
+                                    <label className="col-sm-2 col-form-label"> Project: </label>
+                                    <div className="col-sm-8">
+                                        <input type="text" className="form-control" required value={this.state.project} disabled = {this.state.isParent || this.state.disableFields} />
+                                        <div className="invalid-feedback"> *please select Project</div>
                                     </div>
-                                    <div class="col-sm-2">
-                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" data-target="#myModal-project" onClick={() => this.onSearch('project')} >Search</button>
+                                    <div className="col-sm-2">
+                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" disabled = {this.state.isParent || this.state.disableFields} data-target="#myModal-project" onClick={() => this.onSearch('project')} >Search</button>
                                         </div>
                                 </div>
                             </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <label class="col-sm-2 col-form-label">Task: </label>
-                                    <div class="col-sm-10">
-                                         <input type="text" id="task" className="form-control" value={this.state.task} onChange={this.onChangeTask.bind(this)}/>
+                            <div className="form-group form-group-sm col-sm-12">
+                                <div className="row">
+                                    <label className="col-sm-2 col-form-label">Task: </label>
+                                    <div className="col-sm-10">
+                                         <input type="text" id="task" className="form-control" required value={this.state.task} onChange={this.onChangeTask.bind(this)}/>
+                                         <div className="invalid-feedback"> *please enter Task</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                <div class="col-sm-2"></div>
-                                <div class="col-sm-10">
-                                <input type="checkbox" id="isParent"
-                                            name="date"
-                                            checked={this.state.isParent}
-                                            onChange={this.onChangeIsParent.bind(this)} >
-                                        </input>Parent Task
-                                        </div>
+                            <div className="form-group form-group-sm col-sm-12">
+                                <div className="row">
+                                <div className="col-sm-2"></div>
+                                <div className="col-sm-10">
+                                <input type="checkbox" id="isParent" name="date" checked={this.state.isParent} onChange={this.onChangeIsParent.bind(this)} ></input>Parent Task</div>
                                 </div>
                             </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <label class="col-sm-2 col-form-label">Priority: </label>
-                                    <div class="col-sm-10 rangeIn">
-                                        <input type="range"
-                                            value={this.state.priority}
-                                            min="0"
-                                            max="20"
-                                            step="1"
-                                            disabled = {this.state.isParent}
-                                            className="slider" id="myRange"
-                                            onChange={this.onChangePriority.bind(this)} />
+                            <div className="form-group form-group-sm col-sm-12">
+                                <div className="row">
+                                    <label className="col-sm-2 col-form-label">Priority: </label>
+                                    <div className="col-sm-10 rangeIn">
+                                    <span>{this.state.priority}</span>
+                                        <input type="range" value={this.state.priority} required min="0" max="30" step="1" disabled = {this.state.isParent} className="slider" id="myRange" onChange={this.onChangePriority.bind(this)} />         
+                                        <div className="invalid-feedback"> *please select Priority</div>
                                     </div>
                                     </div>
                             </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <label class="col-sm-2 col-form-label">Parent Task: </label>
-                                    <div class="col-sm-8">
-                                        <input type="text" className="form-control" value={this.state.parentTask}  readOnly = {this.state.isParent} onChange={this.onChangeParentTask.bind(this)}/>
+                            <div className="form-group form-group-sm col-sm-12">
+                                <div className="row">
+                                    <label className="col-sm-2 col-form-label">Parent Task: </label>
+                                    <div className="col-sm-8">
+                                        <input type="text" id="parentTask" required className="form-control" disabled = {this.state.isParent} value={this.state.parentTask} />
+                                        <div className="invalid-feedback"> *please select ParentTask</div>
                                     </div>
-                                    <div class="col-sm-2">
-                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" data-target="#myModal" disabled = {this.state.isParent} onClick={() => this.sortList('parentTask')} >Search</button>
-                                        </div>
+                                    <div className="col-sm-2">
+                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" data-toggle="modal" data-target="#myModal-task" onClick={() => this.onSearch('parent')} >Search</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <label class="col-sm-2 col-form-label">Start Date: </label>
-                                    <div class="col-sm-4"> <input className="form-control" type="date" defaultValue={startDate} min = {startDate} onChange={this.onChangeStartDate.bind(this)} disabled = {this.state.isParent}></input></div>
+                            <div className="form-group form-group-sm col-sm-12">
+                                <div className="row">
+                                    <label className="col-sm-2 col-form-label">Start Date: </label>
+                                    <div className="col-sm-4"> <input type="date" className="form-control"  required={!this.state.isParent}  defaultValue={startDate} min = {startDate} onChange={this.onChangeStartDate.bind(this)} disabled = {this.state.isParent}></input></div>
+                                    <div className="invalid-feedback"> *please select Start Date</div>
                                     <label className="col-sm-2 ">End Date: </label>
-                                    <div class="col-sm-4">  <input className="form-control" type="date" defaultValue={endDate} min = {minEndDate} onChange={this.onChangeEndDate.bind(this)} disabled = {this.state.isParent}></input></div>
+                                    <div className="col-sm-4">  <input className="form-control"  required={!this.state.isParent} type="date" defaultValue={endDate} min = {minEndDate} onChange={this.onChangeEndDate.bind(this)} disabled = {this.state.isParent}></input></div>
+                                    <div className="invalid-feedback"> *please select End date</div>
                                 </div>
                             </div>
-                            <div class="form-group form-group-sm col-sm-12">
-                                <div class="row">
-                                    <label class="col-sm-2 col-form-label">User: </label>
-                                    <div class="col-sm-8">
-                                        <input type="text"  readOnly = {this.state.isParent} value={this.state.user} onChange={this.onChangeUser.bind(this)}/>
+                            <div className="form-group form-group-sm col-sm-12">
+                                <div className="row">
+                                    <label className="col-sm-2 col-form-label">User: </label>
+                                    <div className="col-sm-8">
+                                        <input type="text" className="form-control" required readOnly = {this.state.isParent || this.state.disableFields} value={this.state.user} />
+                                        <div className="invalid-feedback"> *please select User</div>
                                     </div>
-                                    <div class="col-sm-2">
-                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" disabled = {this.state.isParent} data-toggle="modal" data-target="#myModal-user" onClick={() => this.onSearch('user')} >Search</button>
+                                    <div className="col-sm-2">
+                                            <button type="button" id="search" className="btn btn-outline-dark btn-block" disabled = {this.state.isParent  || this.state.disableFields} data-toggle="modal" data-target="#myModal-user" onClick={() => this.onSearch('user')} >Search</button>
                                         </div>
                                 </div>
                             </div>
                 
-                            <div class="form-group form-group-sm col-sm-12">
+                            <div className="form-group form-group-sm col-sm-12">
                                     <div className="row">
                                         <div className="col-sm-8"></div>
                                         <div className="col-sm-4">
@@ -368,14 +411,19 @@ const parentTask = {
             <div className="modal-dialog">
                 <div className='modal-content'>
                     <div className='modal-header'>
-                        <h5 className='modal-title'>Search Manager</h5>
+                        <h5 className='modal-title'>Search User</h5>
                         <button type='button' className='close' data-dismiss='modal'>&times;</button>
                     </div>
                     <div className='modal-body'>
+                    <div className="col-sm-12">
+                  <span>
+                    <input className="form-control" type="text" placeholder="Search..." onChange={this.filterUserList.bind(this)}/>
+                  </span>
+                </div>
                         <DataTable
                             title="Users Details"
                             columns={userColumns}
-                            data={this.state.data}
+                            data={this.state.users}
                             selectableRows
                             onTableUpdate={this.handleChangeUser}>
                         </DataTable>
@@ -390,14 +438,19 @@ const parentTask = {
             <div className="modal-dialog">
                 <div className='modal-content'>
                     <div className='modal-header'>
-                        <h5 className='modal-title'>Search Manager</h5>
+                        <h5 className='modal-title'>Search Project</h5>
                         <button type='button' className='close' data-dismiss='modal'>&times;</button>
                     </div>
                     <div className='modal-body'>
+                    <div className="col-sm-12">
+                  <span>
+                    <input className="form-control" type="text" placeholder="Search..." onChange={this.filterList.bind(this)}/>
+                  </span>
+                </div>
                         <DataTable
                             title="Project Details"
                             columns={projectColumns}
-                            data={this.state.data}
+                            data={this.state.projects}
                             selectableRows
                             onTableUpdate={this.handleChangeProject}>
                         </DataTable>
@@ -412,14 +465,19 @@ const parentTask = {
             <div className="modal-dialog">
                 <div className='modal-content'>
                     <div className='modal-header'>
-                        <h5 className='modal-title'>Search Manager</h5>
+                        <h5 className='modal-title'>Search Parent Tasks</h5>
                         <button type='button' className='close' data-dismiss='modal'>&times;</button>
                     </div>
                     <div className='modal-body'>
+                    <div className="col-sm-12">
+                  <span>
+                    <input className="form-control" type="text" placeholder="Search..." onChange={this.filterTasksList.bind(this)}/>
+                  </span>
+                </div>
                         <DataTable
                             title="Parent Task Details"
                             columns={taskColumns}
-                            data={this.state.data}
+                            data={this.state.ptasks}
                             selectableRows
                             onTableUpdate={this.handleChangeParentTask}>
                         </DataTable>

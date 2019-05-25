@@ -4,6 +4,7 @@ import Moment from 'moment'
 export default class ViewProject extends React.Component {
     suspendProject = () => {
         var p = this.props.project
+        this.setState({ suspendStatus: true})
         this.props.onSelectSuspendProject(p)
     }
 
@@ -22,8 +23,13 @@ export default class ViewProject extends React.Component {
             );
         } else {
             return (
+                <div>
+                <div className="btn-user-row">
+                                <button type="button" className="btn btn-outline-dark btn-block" onClick={this.updateProject}>Edit</button>
+                            </div>
                 <div className="btn-user-row">
                 <button type="button" className="btn btn-outline-dark btn-block" onClick={this.suspendProject}>Suspend</button>
+            </div>
             </div>
             )
         }
@@ -66,9 +72,6 @@ export default class ViewProject extends React.Component {
                                 </div>
                         </div>
                         <div className="col-sm-3">
-                            <div className="btn-user-row">
-                                <button type="button" className="btn btn-outline-dark btn-block" onClick={this.updateProject}>Edit</button>
-                            </div>
                             {this.renderSuspend()}
                         </div>
                     </div>
