@@ -12,7 +12,7 @@ node {
    
     }
         stage('Build Docker image') {
-            app = docker.build("ruchikadocker/project-manager-app", "-f ./Dockerfile .")
+            app = docker.build("ruchikadocker/project-manager-app", "-f ./DockerfileProd .")
         }
         stage('Push image') {
             docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {

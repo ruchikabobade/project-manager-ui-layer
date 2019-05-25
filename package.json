@@ -29,6 +29,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:build": "webpack -p",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:watch": "jest --watchAll --verbose",
