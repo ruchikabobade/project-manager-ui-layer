@@ -111,7 +111,7 @@ export default class AddUser extends React.Component {
     } else {
       axios
         .post(
-          "http://localhost:8080/projectmanager/service/user/addUser",
+          "http://loalhost:8080/projectmanager/service/user/addUser",
           userRecord
         )
         .then(res => {
